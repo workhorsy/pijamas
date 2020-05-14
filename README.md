@@ -5,7 +5,7 @@ pyjamas
 
 - - -
 
-<img src="/logo-big.png" align="left"/>
+<img src="https://zardoz89.github.io/pijamas/img/logo-big.png" align="left"/>
 A BDD assertion library for D.
 
 ## Example
