@@ -6,8 +6,9 @@ jobs:
   include:
     - d: dmd-nightly
     - d: dmd
+    - d: dmd-2.090.1
     - d: ldc
   allow_failures:
     - d: dmd-nightly
 
-script: dub test
+script: ./ci.sh

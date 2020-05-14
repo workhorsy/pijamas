@@ -1,3 +1,7 @@
+---
+layout: default
+title: About
+---
 pyjamas
 =======
 [![Build Status](https://travis-ci.org/Zardoz89/pijamas.svg?branch=master)](https://travis-ci.org/Zardoz89/pijamas)
