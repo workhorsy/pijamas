@@ -4,24 +4,38 @@
   "copyright": "Copyright © 2020, Pedro Tacla Yamada",
   "license": "MIT",
   "authors": [
-    "Pedro Tacla Yamada"
+    "Pedro Tacla Yamada",
+    "Luis Panadero Guardeño"
   ],
   "configurations": [
     {
       "name": "pyjamas",
-      "targetType": "library",
-      "excludedSourceFiles": [
-        "source/pyjamas_test.d"
-      ]
+      "targetType": "library"
     },
     {
       "name": "unittest",
       "targetType": "library",
+      "importPaths": ["source", "tests"],
+      "sourcePaths": ["source", "tests"],
       "dependencies": {
         "silly": "~>1.0.2"
       }
     }
   ],
+  "buildTypes": {
+    "docs": {
+      "buildOptions": [
+        "syntaxOnly"
+      ],
+      "dflags": [
+        "-c",
+        "-Dddocs"
+      ],
+      "dflags-dmd": [
+        "-preview=markdown"
+      ]
+    }
+  },
   "toolchainRequirements": {
     "dub": ">=1.19.0",
     "frontend": ">=2.090"

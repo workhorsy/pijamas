@@ -1,7 +1,8 @@
 /**
- * Authors: Pedro Tacla Yamada
- * Date: August 21, 2014
- * License: Licensed under the GPLv3 license. See LICENSE for more information.
+ * Pijamas, a BDD assertion library for D.
+ *
+ * Authors: Pedro Tacla Yamada, Luis Panadero Guardeño
+ * License: Licensed under the MIT license. See LICENSE for more information.
  */
 module pyjamas;
 
@@ -14,11 +15,16 @@ import std.string : format;
 import std.traits : hasMember, isSomeString, isCallable, isAssociativeArray,
                     isImplicitlyConvertible, Unqual;
 
+/**
+ * Pijamas exports a single function should meant for public use. Because of D’s lookup shortcut syntax, one is able
+ * to use both should(obj) and obj.should to get an object wrapped around an Assertion instance
+ */
 Assertion!T should(T)(T context)
 {
   return new Assertion!T(context);
 }
 
+/// Class returned by should, that it's used to generate the fluent API
 class Assertion(T)
 {
   static bool callable = isCallable!T;
@@ -32,25 +38,36 @@ class Assertion(T)
     context = _context;
   }
 
-  alias id be;
-  alias id as;
-  alias id of;
-  alias id a;
-  alias id and;
-  alias id have;
-  alias id which;
+  alias be = id;
+  alias as = id;
+  alias of = id;
+  alias a = id;
+  alias and = id;
+  alias have = id;
+  alias which = id;
 
+  /// Identity function. Simply does nothing
   Assertion id()
   {
     return this;
   }
 
+  /**
+   * This function negates the wrapper assertion. With it, one can express fluent assertions without much effort.
+   *
+   * Examples:
+   * ```
+   * 10.should.not.equal(2); // OK
+   * 10.should.not.equal(10); // Throws an Exception "expected 10 not to be 10"
+   * ```
+   */
   Assertion not()
   {
     negated = !negated;
     return this;
   }
 
+  // Helper that evaluates the asserted expression
   U ok(U)(U expr,
           lazy string message,
           string file = __FILE__,
@@ -60,6 +77,15 @@ class Assertion(T)
     throw new Exception(message, file, line);
   }
 
+  /**
+   * Asserts for equality between two objects. Returns the value wrapped around the assertion.
+   *
+   * Examples:
+   * ```
+   * [1, 2, 3, 4].should.equal([1, 2, 3, 4]);
+   * 255.should.equal(10); // Throws an Exception "expected 255 to equal 10"
+   * ```
+   */
   T equal(U)(U other,
              string file = __FILE__,
              size_t line = __LINE__)
@@ -69,12 +95,26 @@ class Assertion(T)
     return context;
   }
 
+  /**
+   * Asserts whether a value exists - currently simply compares it with null, if it is a pointer, a class or a string.
+   * Returns the value wrapped around the assertion.
+   *
+   * Examples:
+   * ```
+   * auto exists = "I exist!";
+   * should(exists).exist;
+   * string doesntexist;
+   * doesntexist.should.exist; // Throws an Exception "expected null to exist"
+   * Object aObject;
+   * aClass.should.not.exists;
+   * ```
+   */
   T exist(string file = __FILE__, size_t line = __LINE__)
   {
-    static if(isImplicitlyConvertible!(T, typeof(null)))
+    import std.traits : isPointer, isSomeString;
+    static if(isPointer!T || isSomeString!T || __traits(compiles, () { T t; assert(t is null);}))
     {
-      operator = "exist";
-      if(context == null)
+      if(context is null)
       {
         ok(false, message, file, line);
       }
@@ -82,6 +122,7 @@ class Assertion(T)
     return context;
   }
 
+  // Generates string message when an assertation fails
   string message(U)(U other)
   {
     return format("expected %s to %s%s%s", context.to!string,
@@ -90,6 +131,7 @@ class Assertion(T)
                                            (" " ~ other.to!string));
   }
 
+  // Generates string message when an assertation fails
   string message()
   {
     return format("expected %s to %s%s", context.to!string,
@@ -97,12 +139,30 @@ class Assertion(T)
                                          operator);
   }
 
+  /**
+   * Asserts if a value is bigger than another value. Returns the result.
+   *
+   * Examples:
+   * ```
+   * "z".should.be.biggerThan("a");
+   * 10.should.be.biggerThan(1);
+   * ```
+   */
   bool biggerThan(U)(U other, string file = __FILE__, size_t line = __LINE__)
   {
     operator = "be bigger than";
     return ok(context > other, message(other), file, line);
   }
 
+  /**
+   * Asserts if a value is smaller than another value. Returns the result.
+   *
+   * Examples:
+   * ```
+   * 10.should.be.smallerThan(100);
+   * false.should.be.smallerThan(true);
+   * ```
+   */
   bool smallerThan(U)(U other, string file = __FILE__, size_t line = __LINE__)
   {
     operator = "be smaller than";
@@ -111,6 +171,15 @@ class Assertion(T)
 
   static if(isForwardRange!T && __traits(compiles, context.isSorted))
   {
+    /**
+     * Asserts whether a forward range is sorted.
+     *
+     * Examples:
+     * ```
+     * [1, 2, 3, 4].should.be.sorted;
+     * [1, 2, 0, 4].should.not.be.sorted;
+     * ```
+     */
     bool sorted(string file = __FILE__, size_t line = __LINE__)
     {
       operator = "be sorted";
@@ -119,6 +188,14 @@ class Assertion(T)
   }
 
   static if(isAssociativeArray!T) {
+    /**
+     * Asserts for an associative array to have a key equal to other.
+     *
+     * Examples:
+     * ```
+     * ["something": 10].should.have.key("something");
+     * ```
+     */
     void key(U)(U other, string file = __FILE__, size_t line = __LINE__)
     {
       operator = "have key";
@@ -128,7 +205,17 @@ class Assertion(T)
 
   static if(isInputRange!T || isAssociativeArray!T)
   {
-    U value(U)(U other, string file = __FILE__, size_t line = __LINE__)
+    /**
+     * Asserts for an input range wrapped around an Assertion to contain/include a value.
+     *
+     * Examples:
+     * ```
+     * [1, 2, 3, 4].should.include(3);
+     * "something".should.not.include('o');
+     * "something".should.include("th");
+     * ```
+     */
+    U include(U)(U other, string file = __FILE__, size_t line = __LINE__)
     {
       static if(isAssociativeArray!T) auto pool = context.values;
       else auto pool = context;
@@ -138,12 +225,24 @@ class Assertion(T)
       return other;
     }
 
-    alias value include;
-    alias value contain;
+    /// Same that include
+    alias value = include;
+    /// Same that include
+    alias contain = include;
   }
 
   static if(hasLength!T || hasMember!(T, "string") || isSomeString!T)
   {
+    /**
+     * Asserts for the .length property or function value to equal some value.
+     *
+     * Examples:
+     * ```
+     * [1, 2, 3, 4].should.have.length(4);
+     * "abcdefg".should.have.length(0);
+     * // ^^ - Throws an Exception "expected 'abcdefg' to have length of 0"
+     * ```
+     */
     U length(U)(U len, string file = __FILE__, size_t line = __LINE__)
     {
       operator = "have length of";
@@ -159,6 +258,18 @@ class Assertion(T)
     private alias RegexOfT = Regex!(BasicElementOfT);
     private alias StaticRegexOfT = StaticRegex!(BasicElementOfT);
 
+    /**
+     * Asserts for a string wrapped around the Assertion to match a regular expression.
+     *
+     * Examples:
+     * ```
+     * "something weird".should.match(`[a-z]+`);
+     * "something weird".should.match(regex(`[a-z]+`));
+     * "something 2 weird".should.not.match(ctRegex!(`^[a-z]+$`));
+     * "1234numbers".should.match(`[0-9]+[a-z]+`);
+     * "1234numbers".should.not.match(`^[a-z]+`);
+     * ```
+     */
     auto match(RegEx)(RegEx re, string file = __FILE__, size_t line = __LINE__)
       if(is(RegEx == RegexOfT) ||
          is(RegEx == StaticRegexOfT) ||
@@ -174,11 +285,29 @@ class Assertion(T)
 
   static if(is(T == bool))
   {
+    /**
+     * Asserts for a boolean value to be equal to true.
+     *
+     * Examples:
+     * ```
+     * true.should.be.True;
+     * (1 == 1).should.be.True;
+     * ```
+     */
     bool True(string file = __FILE__, size_t line = __LINE__)
     {
       return ok(context == true, message(true), file, line);
     }
 
+    /**
+     * Asserts for a boolean value to be equal to true.
+     *
+     * Examples:
+     * ```
+     * false.should.be.False;
+     * (1 != 1).should.be.False;
+     * ```
+     */
     bool False(string file = __FILE__, size_t line = __LINE__)
     {
       return !ok(context == false, message(false), file, line);
@@ -187,6 +316,26 @@ class Assertion(T)
 
   static if(isCallable!T)
  {
+    /**
+     * Asserts whether a callable object wrapped around the assertion throws an exception of type T.
+     *
+     * Examples:
+     * ```
+     * void throwing()
+     * {
+     *   throw new Exception("I throw with 0!");
+     * }
+
+     * should(&throwing).Throw!Exception;
+
+     * void notThrowing()
+     * {
+     *   return;
+     * }
+     *
+     * should(&notThrowing).not.Throw;
+     * ```
+     */
     void Throw(T : Throwable = Exception)(string file = __FILE__,
                                           size_t line = __LINE__)
     {
@@ -199,3 +348,46 @@ class Assertion(T)
   }
 
 }
+
+@("Should(v)")
+unittest {
+  //  it("returns an Assertion", {
+  assert(is(typeof(10.should) == Assertion!int));
+}
+
+@("Should Assertion")
+unittest {
+  //  it("can be instantiated for ranges of structs without `opCmp`", {
+  struct Test {
+    int a;
+    int b;
+  }
+
+  cast(void) [ Test( 2, 3)].should;
+}
+
+@("Should Assertion.message")
+unittest {
+  //  it("returns the correct message for binary operators",
+  {
+    auto a = new Assertion!int( 10);
+    a.operator = "equal";
+    assert(a.message( 20) == "expected 10 to equal 20");
+  }
+
+  //  it("returns the correct message for unary operators",
+  {
+    auto a = new Assertion!string( "function");
+    a.operator = "throw";
+    assert(a.message == "expected function to throw");
+  }
+
+  //  it("returns the correct message for negated operators",
+  {
+    auto a = new Assertion!int( 10);
+    a.operator = "be";
+    assert(a.not.message( false) == "expected 10 to not be false");
+  }
+}
+
+
