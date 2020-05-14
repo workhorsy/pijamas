@@ -11,4 +11,5 @@ echo "title: About" >> docs/index.md
 echo "---" >> docs/index.md
 cat README.md >> docs/index.md
 
+cp LICENSE docs/
 

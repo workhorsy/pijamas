@@ -1,12 +1,14 @@
-pyjamas
+pijamas
 =======
 [![Build Status](https://travis-ci.org/Zardoz89/pijamas.svg?branch=master)](https://travis-ci.org/Zardoz89/pijamas)
 [![Build status](https://ci.appveyor.com/api/projects/status/7rwhguv6wfvyrufs/branch/master?svg=true)](https://ci.appveyor.com/project/Zardoz89/pijamas/branch/master)
 
 - - -
 
-<img src="https://zardoz89.github.io/pijamas/img/logo-big.png" align="left"/>
+<img src="https://zardoz89.github.io/pijamas/assets/img/logo-big.png" align="left"/>
 A BDD assertion library for D.
+
+Forked from [Yamadacpc's Pyjamas](http://yamadapc.github.io/pyjamas/)
 
 ## Example
 ```d
@@ -19,12 +21,12 @@ import pyjamas;
 
 ## Introduction
 
-Pyjamas is an assertion library heavily inspired by [visionmedia'ś
+Pyjamas, and by extension Pijamas, is an assertion library heavily inspired by [visionmedia'ś
 should.js](https://github.com/visionmedia/should.js) module for Node.JS.
 
 ## General Assertions
 
-Pyjamas exports a single function `should` meant for public use. Because of D's
+Pijamas exports a single function `should` meant for public use. Because of D's
 lookup shortcut syntax, one is able to use both `should(obj)` and `obj.should`
 to get an object wrapped around an `Assertion` instance.
 
@@ -171,11 +173,20 @@ BTW, I'll be glad to accept help in writting the documentation.
 ## Tests
 
 Run tests with:
+
 ```
 dub test
 ```
+
+## Why 'Pijamas'
+
+The original project was name "Pyjamas", a name that could be confuse, and have
+name clash on search engines, with Python's Pyjamas framework. So a new name
+sees a good idea. Pijamas is the word on Spanish and English for "Pyjamas", so
+it's a start. If anyone have a better name, hurry up to suggest it.
 
 ## License
 
 This code is licensed under the MIT license. See the [LICENSE](LICENSE) file
 for more information.
+
