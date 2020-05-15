@@ -4,7 +4,7 @@
  * Authors: Pedro Tacla Yamada, Luis Panadero Guardeño
  * License: Licensed under the MIT license. See LICENSE for more information.
  */
-module pyjamas;
+module pijamas;
 
 import std.algorithm : canFind, isSorted;
 import std.conv : to;

@@ -1,3 +1,7 @@
+# v0.3.0
+
+* Rename module to pijamas.
+
 # v0.2.2
 
 Versions v0.2.x must keep being source compatible with Pyjamas.

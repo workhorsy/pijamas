@@ -4,11 +4,11 @@
  * Authors: Pedro Tacla Yamada, Luis Panadero Guardeño
  * License: Licensed under the MIT license. See LICENSE for more information.
  */
-module pyjamas_spec;
+module pijamas_spec;
 
 import std.exception;
 
-import pyjamas;
+import pijamas;
 
 @("Should Assertion.exist")
 unittest {
