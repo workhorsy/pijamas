@@ -256,6 +256,21 @@ class Assertion(T)
       ok(context.length == len, message(len), file, line);
       return len;
     }
+
+    /**
+     * Asserts for the .length property or function value to be equal to 0.
+     *
+     * Examples:
+     * ```
+     * [].should.be.empty;
+     * "".should.be.empty;
+     * ```
+     */
+    bool empty(string file = __FILE__, size_t line = __LINE__)
+    {
+      operator = "is empty";
+      return ok(context.length == 0, message(), file, line);
+    }
   }
 
   import std.regex : Regex, isRegexFor;

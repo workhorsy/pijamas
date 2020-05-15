@@ -235,6 +235,38 @@ unittest
   }
 }
 
+@("Should Assertion.empty")
+unittest
+{
+  // it("asserts that a string is empty"
+  {
+    auto str = "1234567";
+    str.should.not.be.empty;
+    assertThrown!Exception(str.should.be.empty);
+    "".should.be.empty;
+  }
+
+  // it("asserts that an array is empty"
+  {
+    auto a = [1, 2, 3, 4, 5, 6];
+    a.should.not.be.empty;
+    assertThrown!Exception(a.should.be.empty);
+    int[] emptyArr;
+    emptyArr.should.be.empty;
+  }
+
+  // it("asserts that an associative array is empty",
+  {
+    string[string] aa = [
+      "something" : "here", "what" : "is", "this" : "stuff", "we're" : "doing"
+    ];
+    aa.should.not.be.empty;
+    assertThrown!Exception(aa.should.be.empty);
+    int[string] emptyAa;
+    emptyAa.should.be.empty;
+  }
+}
+
 @("Should Assertion.Throw")
 unittest
 {

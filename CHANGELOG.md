@@ -1,6 +1,7 @@
 # v0.3.0
 
 * Rename module to pijamas.
+* .empty for arrays, associative arrays and strings.
 
 # v0.2.2
 
