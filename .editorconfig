@@ -9,3 +9,6 @@ indent_size = 2
 trim_trailing_whitespace = true
 charset = utf-8
 
+[*.d]
+dfmt_split_operator_at_line_end = true
+

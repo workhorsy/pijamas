@@ -2,6 +2,11 @@
 layout: default
 title: Changelog
 ---
+# v0.3.0
+
+* Rename module to pijamas.
+* .empty for arrays, associative arrays and strings.
+
 # v0.2.2
 
 Versions v0.2.x must keep being source compatible with Pyjamas.

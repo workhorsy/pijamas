@@ -99,10 +99,20 @@ value.
 #### `U length(U)(U length, string file = __FILE__, size_t line = __LINE__);`
 
 Asserts for the `.length` property or function value to equal some value.
+
 ```d
 [1, 2, 3, 4].should.have.length(4);
 "abcdefg".should.have.length(0);
 // ^^ - Throws an Exception "expected 'abcdefg' to have length of 0"
+```
+
+#### `bool empty(string file = __FILE__, size_t line = __LINE__);`
+
+Asserts that the .lenght property or function value is equal to 0;
+
+```d
+[].should.be.empty;
+"".should.be.empty;
 ```
 
 #### `auto match(RegEx)(RegEx re, string file = __FILE__, size_t line = __LINE__);`

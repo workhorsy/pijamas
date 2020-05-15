@@ -3,7 +3,7 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>pyjamas</title>
+    <title>pijamas</title>
     <style type="text/css" media="screen">
       html, body, div, span, object, iframe, h1, h2, h3, h4, h5, h6, p,
       blockquote, pre, a, abbr, address, cite, code, del, dfn, em, figure,
@@ -508,7 +508,7 @@
   <body id="ddoc_main" class="ddoc dlang">
     <div class="content_wrapper">
       <article class="module">
-        <h1 class="module_name">pyjamas</h1>
+        <h1 class="module_name">pijamas</h1>
         <section id="module_content"><section class="section ddoc_sections">
   <div class="ddoc_summary">
   <p class="para">
@@ -1092,6 +1092,56 @@ aClass.should.not.exists;
 <span class="string_literal">"abcdefg"</span>.should.have.<span class="psymbol">length</span>(0);
 <span class="comment">// ^^ - Throws an Exception "expected 'abcdefg' to have length of 0"
 </span></code></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+  </p>
+</div>
+</section>
+
+</div>
+
+</li><li class="ddoc_member">
+  <div class="ddoc_member_header">
+  <div class="ddoc_header_anchor">
+  <a href="#Assertion.empty" id="Assertion.empty"><code class="code">empty</code></a>
+</div>
+</div><div class="ddoc_decl">
+  <section class="section">
+    <div class="declaration">
+      <h4>Declaration</h4>
+      <div class="dlang">
+        <p class="para">
+          <code class="code">
+            <span class="ddoc_anchor" id="Assertion.empty"></span>bool <code class="code">empty</code>(string <code class="code">file</code> = __FILE__, size_t <code class="code">line</code> = __LINE__);
+
+          </code>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="ddoc_decl">
+  <section class="section ddoc_sections">
+  <div class="ddoc_summary">
+  <p class="para">
+    Asserts for the .length property or function value to be equal to 0.
+
+  </p>
+</div>
+<div class="ddoc_examples">
+  <h4>Examples</h4>
+  <p class="para">
+    
+<section class="code_listing">
+  <div class="code_sample">
+    <div class="dlang">
+      <ol class="code_lines">
+        <li><code class="code">[].should.be.<span class="psymbol">empty</span>;
+<span class="string_literal">""</span>.should.be.<span class="psymbol">empty</span>;
+</code></li>
       </ol>
     </div>
   </div>

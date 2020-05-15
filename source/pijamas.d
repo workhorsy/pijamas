@@ -4,16 +4,15 @@
  * Authors: Pedro Tacla Yamada, Luis Panadero Guardeño
  * License: Licensed under the MIT license. See LICENSE for more information.
  */
-module pyjamas;
+module pijamas;
 
 import std.algorithm : canFind, isSorted;
 import std.conv : to;
-import std.range : isInputRange, isForwardRange, hasLength, ElementEncodingType,
-                   empty;
-import std.regex : Regex, StaticRegex;// & std.regex.match
+import std.range : isInputRange, isForwardRange, hasLength, ElementEncodingType, empty;
+import std.regex : Regex, StaticRegex;
 import std.string : format;
 import std.traits : hasMember, isSomeString, isCallable, isAssociativeArray,
-                    isImplicitlyConvertible, Unqual;
+  isImplicitlyConvertible, Unqual;
 
 /**
  * Pijamas exports a single function should meant for public use. Because of D’s lookup shortcut syntax, one is able
@@ -27,12 +26,14 @@ Assertion!T should(T)(T context)
 /// Class returned by should, that it's used to generate the fluent API
 class Assertion(T)
 {
-  static bool callable = isCallable!T;
-  bool negated = false;
-  string operator = "be";
-  T context;
+  private static bool callable = isCallable!T;
+  private bool negated = false;
+  private string operator = "be";
+  private T context;
 
-  this() {};
+  this()
+  {
+  };
   this(T _context)
   {
     context = _context;
@@ -74,12 +75,11 @@ class Assertion(T)
   }
 
   // Helper that evaluates the asserted expression
-  U ok(U)(U expr,
-          lazy string message,
-          string file = __FILE__,
-          size_t line = __LINE__)
+  U ok(U)(U expr, lazy string message, string file = __FILE__, size_t line = __LINE__)
   {
-    if(negated ? !expr : expr) return expr;
+    if (negated ? !expr : expr) {
+      return expr;
+    }
     throw new Exception(message, file, line);
   }
 
@@ -92,9 +92,7 @@ class Assertion(T)
    * 255.should.equal(10); // Throws an Exception "expected 255 to equal 10"
    * ```
    */
-  T equal(U)(U other,
-             string file = __FILE__,
-             size_t line = __LINE__)
+  T equal(U)(U other, string file = __FILE__, size_t line = __LINE__)
   {
     auto t_other = other.to!T;
     ok(context == other, message(other), file, line);
@@ -118,10 +116,13 @@ class Assertion(T)
   T exist(string file = __FILE__, size_t line = __LINE__)
   {
     import std.traits : isPointer, isSomeString;
-    static if(isPointer!T || isSomeString!T || __traits(compiles, () { T t; assert(t is null);}))
+
+    static if (isPointer!T || isSomeString!T || __traits(compiles, () {
+        T t;
+        assert(t is null);
+      }))
     {
-      if(context is null)
-      {
+      if (context is null) {
         ok(false, message, file, line);
       }
     }
@@ -131,18 +132,14 @@ class Assertion(T)
   // Generates string message when an assertation fails
   string message(U)(U other)
   {
-    return format("expected %s to %s%s%s", context.to!string,
-                                           (negated ? "not " : ""),
-                                           operator,
-                                           (" " ~ other.to!string));
+    return format("expected %s to %s%s%s", context.to!string, (negated ?
+        "not " : ""), operator, (" " ~ other.to!string));
   }
 
   // Generates string message when an assertation fails
   string message()
   {
-    return format("expected %s to %s%s", context.to!string,
-                                         (negated ? "not " : ""),
-                                         operator);
+    return format("expected %s to %s%s", context.to!string, (negated ? "not " : ""), operator);
   }
 
   /**
@@ -175,7 +172,7 @@ class Assertion(T)
     return ok(context < other, message(other), file, line);
   }
 
-  static if(isForwardRange!T && __traits(compiles, context.isSorted))
+  static if (isForwardRange!T && __traits(compiles, context.isSorted))
   {
     /**
      * Asserts whether a forward range is sorted.
@@ -193,7 +190,8 @@ class Assertion(T)
     }
   }
 
-  static if(isAssociativeArray!T) {
+  static if (isAssociativeArray!T)
+  {
     /**
      * Asserts for an associative array to have a key equal to other.
      *
@@ -209,7 +207,7 @@ class Assertion(T)
     }
   }
 
-  static if(isInputRange!T || isAssociativeArray!T)
+  static if (isInputRange!T || isAssociativeArray!T)
   {
     /**
      * Asserts for an input range wrapped around an Assertion to contain/include a value.
@@ -223,8 +221,11 @@ class Assertion(T)
      */
     U include(U)(U other, string file = __FILE__, size_t line = __LINE__)
     {
-      static if(isAssociativeArray!T) auto pool = context.values;
-      else auto pool = context;
+      static if (isAssociativeArray!T) {
+        auto pool = context.values;
+      } else {
+        auto pool = context;
+      }
 
       operator = "contain value";
       ok(canFind(pool, other), message(other), file, line);
@@ -237,7 +238,7 @@ class Assertion(T)
     alias contain = include;
   }
 
-  static if(hasLength!T || hasMember!(T, "string") || isSomeString!T)
+  static if (hasLength!T || hasMember!(T, "string") || isSomeString!T)
   {
     /**
      * Asserts for the .length property or function value to equal some value.
@@ -255,11 +256,27 @@ class Assertion(T)
       ok(context.length == len, message(len), file, line);
       return len;
     }
+
+    /**
+     * Asserts for the .length property or function value to be equal to 0.
+     *
+     * Examples:
+     * ```
+     * [].should.be.empty;
+     * "".should.be.empty;
+     * ```
+     */
+    bool empty(string file = __FILE__, size_t line = __LINE__)
+    {
+      operator = "is empty";
+      return ok(context.length == 0, message(), file, line);
+    }
   }
 
   import std.regex : Regex, isRegexFor;
   import std.traits : isSomeString;
-  static if(isSomeString!T)
+
+  static if (isSomeString!T)
   {
 
     /**
@@ -275,9 +292,10 @@ class Assertion(T)
      * ```
      */
     auto match(RegEx)(RegEx re, string file = __FILE__, size_t line = __LINE__)
-      if (isSomeString!T && isRegexFor!(RegEx, T))
+        if (isSomeString!T && isRegexFor!(RegEx, T))
     {
       import std.regex : match;
+
       auto m = match(context, re);
       operator = "match";
       ok(!m.empty, message(re), file, line);
@@ -286,9 +304,10 @@ class Assertion(T)
 
     ///ditto
     auto match(U)(U re, string file = __FILE__, size_t line = __LINE__)
-      if (isSomeString!T && isSomeString!U)
+        if (isSomeString!T && isSomeString!U)
     {
       import std.regex : regex, match;
+
       auto m = match(context, regex(re));
       operator = "match";
       ok(!m.empty, message(re), file, line);
@@ -296,7 +315,7 @@ class Assertion(T)
     }
   }
 
-  static if(is(T == bool))
+  static if (is(T == bool))
   {
     /**
      * Asserts for a boolean value to be equal to true.
@@ -327,8 +346,8 @@ class Assertion(T)
     }
   }
 
-  static if(isCallable!T)
- {
+  static if (isCallable!T)
+  {
     /**
      * Asserts whether a callable object wrapped around the assertion throws an exception of type T.
      *
@@ -349,13 +368,15 @@ class Assertion(T)
      * should(&notThrowing).not.Throw;
      * ```
      */
-    void Throw(T : Throwable = Exception)(string file = __FILE__,
-                                          size_t line = __LINE__)
+    void Throw(T : Throwable = Exception)(string file = __FILE__, size_t line = __LINE__)
     {
       operator = "throw";
       bool thrown = false;
-      try context();
-      catch(T) thrown = true;
+      try {
+        context();
+      } catch (T) {
+        thrown = true;
+      }
       ok(thrown, message(), file, line);
     }
   }
@@ -363,44 +384,46 @@ class Assertion(T)
 }
 
 @("Should(v)")
-unittest {
+unittest
+{
   //  it("returns an Assertion", {
   assert(is(typeof(10.should) == Assertion!int));
 }
 
 @("Should Assertion")
-unittest {
+unittest
+{
   //  it("can be instantiated for ranges of structs without `opCmp`", {
-  struct Test {
+  struct Test
+  {
     int a;
     int b;
   }
 
-  cast(void) [ Test( 2, 3)].should;
+  cast(void)[Test(2, 3)].should;
 }
 
 @("Should Assertion.message")
-unittest {
+unittest
+{
   //  it("returns the correct message for binary operators",
   {
-    auto a = new Assertion!int( 10);
+    auto a = new Assertion!int(10);
     a.operator = "equal";
-    assert(a.message( 20) == "expected 10 to equal 20");
+    assert(a.message(20) == "expected 10 to equal 20");
   }
 
   //  it("returns the correct message for unary operators",
   {
-    auto a = new Assertion!string( "function");
+    auto a = new Assertion!string("function");
     a.operator = "throw";
     assert(a.message == "expected function to throw");
   }
 
   //  it("returns the correct message for negated operators",
   {
-    auto a = new Assertion!int( 10);
+    auto a = new Assertion!int(10);
     a.operator = "be";
-    assert(a.not.message( false) == "expected 10 to not be false");
+    assert(a.not.message(false) == "expected 10 to not be false");
   }
 }
-
-
