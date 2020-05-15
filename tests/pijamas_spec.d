@@ -11,7 +11,8 @@ import std.exception;
 import pijamas;
 
 @("Should Assertion.exist")
-unittest {
+unittest
+{
   //  it("existence of string",
   {
     // String
@@ -30,7 +31,11 @@ unittest {
     i.should.exist;
     i.should.not.exist;
 
-    struct S { int x;}
+    struct S
+    {
+      int x;
+    }
+
     S s;
     assertNotThrown!Exception(s.should.exist);
     assertNotThrown!Exception(s.should.not.exist);
@@ -51,10 +56,14 @@ unittest {
   //  it("Class reference"
   {
     // Class
-    class C {
+    class C
+    {
       int x;
-      this() {}
+      this()
+      {
+      }
     }
+
     C c;
     c.should.not.exist;
     assertThrown!Exception(c.should.exist);
@@ -62,7 +71,8 @@ unittest {
 }
 
 @("Should Assertion.True")
-unittest {
+unittest
+{
   // it("returns and asserts for true",
   {
     true.should.be.True;
@@ -77,7 +87,8 @@ unittest {
 }
 
 @("Should Assertion.False")
-unittest {
+unittest
+{
   // it("returns and asserts for false",
   {
     false.should.be.False;
@@ -92,7 +103,8 @@ unittest {
 }
 
 @("Should Assertion.equal")
-unittest {
+unittest
+{
   //  it("asserts whether two values are equal",
   {
     10.should.be.equal(10);
@@ -137,34 +149,38 @@ unittest {
 }
 
 @("Should Assertion.match")
-unittest {
+unittest
+{
   // it("returns whether a string type matches a Regex",
   {
     import std.regex : regex;
+
     string str = "Something weird";
-    str.should.match( regex( `[a-z]+`));
-    assertThrown!Exception(str.should.match( regex(`[0-9]+`)));
+    str.should.match(regex(`[a-z]+`));
+    assertThrown!Exception(str.should.match(regex(`[0-9]+`)));
   }
 
   // it("returns whether a string type matches a StaticRegex",
   {
-     import std.regex : ctRegex;
-     string str = "something 2 weird";
-     str.should.match(ctRegex!`[a-z0-9]+`);
-     assertThrown!Exception(str.should.match(ctRegex!`^[a-z]+$`));
+    import std.regex : ctRegex;
+
+    string str = "something 2 weird";
+    str.should.match(ctRegex!`[a-z0-9]+`);
+    assertThrown!Exception(str.should.match(ctRegex!`^[a-z]+$`));
   }
 
   // it("returns whether a string type matches a string regex",
   {
     string str = "1234numbers";
-    str.should.match( `[0-9]+[a-z]+`);
-    str.should.not.match( `^[a-z]+`);
-    assertThrown!Exception(str.should.match( `^[a-z]+`));
+    str.should.match(`[0-9]+[a-z]+`);
+    str.should.not.match(`^[a-z]+`);
+    assertThrown!Exception(str.should.match(`^[a-z]+`));
   }
 }
 
 @("Should Assertion.include")
-unittest {
+unittest
+{
   // it("asserts for arrays containing elements",
   {
     int[] a = [1, 2, 3, 4, 5, 6];
@@ -175,7 +191,7 @@ unittest {
 
   // it("asserts for associative arrays containing values",
   {
-    int[string] aa = ["something": 2, "else": 3];
+    int[string] aa = ["something" : 2, "else" : 3];
     aa.should.have.value(2);
     aa.should.not.have.value(4);
     assertThrown!Exception(aa.should.have.value(42));
@@ -193,7 +209,8 @@ unittest {
 }
 
 @("Should Assertion.length")
-unittest {
+unittest
+{
   // it("asserts for length equality for strings",
   {
     auto str = "1234567";
@@ -211,10 +228,7 @@ unittest {
   // it("asserts for length equality for associative arrays",
   {
     string[string] aa = [
-      "something": "here",
-      "what": "is",
-      "this": "stuff",
-      "we're": "doing"
+      "something" : "here", "what" : "is", "this" : "stuff", "we're" : "doing"
     ];
     aa.should.have.length(4);
     assertThrown!Exception(aa.should.have.length(24));
@@ -222,7 +236,8 @@ unittest {
 }
 
 @("Should Assertion.Throw")
-unittest {
+unittest
+{
   // it("asserts whether an expressions throws",
   {
     void throwing()
@@ -243,12 +258,11 @@ unittest {
 }
 
 @("Should Assertion.key")
-unittest {
+unittest
+{
   // it("asserts for `key` existence in types with `opIndex` defined",
   {
-    auto aArr = [
-      "something": "here",
-    ];
+    auto aArr = ["something" : "here",];
 
     aArr.should.have.key("something");
     aArr.should.not.have.key("else");
@@ -257,7 +271,8 @@ unittest {
 }
 
 @("Should Assertion.sorted")
-unittest {
+unittest
+{
   // it("asserts whether a range is sorted",
   {
     auto unsorted = [4, 3, 2, 1];
@@ -270,7 +285,8 @@ unittest {
 }
 
 @("Should Assertion.biggerThan")
-unittest {
+unittest
+{
   //it("asserts whether a value is bigger than other",
   {
     auto a1 = true;
@@ -285,7 +301,8 @@ unittest {
 }
 
 @("Should Assertion.smallerThan")
-unittest {
+unittest
+{
   // it("asserts whether a value is smaller than other",
   {
     auto a1 = false;
