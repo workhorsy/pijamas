@@ -1,0 +1,10 @@
+menu:
+  - url: index.html
+    name: index.md
+    title: About
+  - url: changelog.html
+    name: changelog.md
+    title: Changelog
+  - url: pyjamas.html
+    name: pyjamas.html
+    title: Documentation

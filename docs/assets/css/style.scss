@@ -1,0 +1,41 @@
+
+@import "";
+
+
+header .menu {
+
+  ul {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    background-color: transparent;
+    border: 0;
+
+    li {
+      border: 0;
+      width: unset;
+      float: unset;
+      height: unset;
+      font-weight: bold;
+      padding-bottom: 0.5em;
+
+      a, a:visited {
+        line-height: unset;
+        font-size: unset;
+        text-align: unset;
+        padding: 0;
+        margin: 0;
+        height: unset;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+
+      &.current::before {
+        content: "»";
+      }
+    }
+  }
+}
