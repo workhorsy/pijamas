@@ -6,6 +6,13 @@ title: Changelog
 
 Versions v0.2.x must keep being source compatible with Pyjamas.
 
+* Ignores failing Appveyor with LDC on 32 bit Windows. Looks that its a problem
+    of 32bit DUB+LDC 1.21.0 on Windows.
+
+# v0.2.2-beta
+
+Versions v0.2.x must keep being source compatible with Pyjamas.
+
 * Update to DLang frontend 2.090
 * Autogeneration of GH Pages with documentation
 * Rewrite tests to use Silly
