@@ -30,6 +30,17 @@ Pijamas exports a single function `should` meant for public use. Because of D's
 lookup shortcut syntax, one is able to use both `should(obj)` and `obj.should`
 to get an object wrapped around an `Assertion` instance.
 
+#### `.be` `.as` `.of` `.a` `.and` `.have` `.which`
+
+These methods all are aliases for an identity function, returning the assertion
+instance without modification. This allows one to have a more fluent API, by
+chaining statements together:
+
+```d
+10.should.be.equal(10);
+[1, 2, 3, 4].should.have.length(4);
+```
+
 #### `Assertion not()`
 
 This function negates the wrapper assertion. With it, one can express fluent
@@ -50,12 +61,13 @@ assertion.
 #### `T exist(string file = __FILE__, size_t line = __LINE__);`
 
 Asserts whether a value exists - currently simply compares it with `null`, if it
-is convertible to `null`. Returns the value wrapped around the assertion.
+is convertible to `null` (actually strings, pointers and classes). Returns the 
+value wrapped around the assertion.
 ```d
 auto exists = "I exist!";
 should(exists).exist;
 string doesntexist;
-str.should.exist; // Throws an Exception "expected null to exist"
+doesntexist.should.exist; // Throws an Exception "expected null to exist"
 ```
 
 #### `bool biggerThan(U)(U other, string file = __FILE__, size_t line = __LINE__);`
@@ -108,6 +120,7 @@ Asserts for a string wrapped around the Assertion to match a regular expression.
 
 Both functions have the same signature.
 Asserts for a boolean value to be equal to `true` or to ``false`.`
+
 ```d
 true.should.be.True;
 false.should.be.False;
@@ -116,6 +129,7 @@ false.should.be.False;
 #### `bool sorted(string file = __FILE__, size_t line = __LINE__);`
 
 Asserts whether a forward range is sorted.
+
 ```d
 [1, 2, 3, 4].should.be.sorted;
 [1, 2, 0, 4].should.not.be.sorted;
@@ -124,6 +138,7 @@ Asserts whether a forward range is sorted.
 #### `void key(U)(U other, string file = __FILE__, size_t line = __LINE__);`
 
 Asserts for an associative array to have a key equal to `other`.
+
 ```d
 ["something": 10].should.have.key("something");
 ```
@@ -148,25 +163,14 @@ void notThrowing()
 should(&notThrowing).not.Throw;
 ```
 
-#### `.be` `.as` `.of` `.a` `.and` `.have` `.which`
-
-These methods all are aliases for an identity function, returning the assertion
-instance without modification. This allows one to have a more fluent API, by
-chaining statements together:
-```d
-10.should.be.equal(10);
-[1, 2, 3, 4].should.have.length(4);
-```
-
 ## Need more documentation?
 
 I know the documentation is still somewhat lacking, but it's better than
 nothing, I guess? :)
 
-Try looking at the test suite in [`tests/pyjamas_test.d`](/pyjamas_test.d)
-to see some "real world" testing of the library. Even though I'm using my
-testing framework [`bed`](https://github.com/yamadapc/bed), this library is
-supposed to be framework agnostic (you can use it with `unittest` if you want).
+Try looking at the test suite in [`tests/pyjamas_spec.d`](/tests/pyjamas_spec.d)
+to see some "real world" testing of the library. Even though we are using [Silly](https://gitlab.com/AntonMeep/silly)
+testing runner, this library is supposed to be framework agnostic.
 
 BTW, I'll be glad to accept help in writting the documentation.
 
