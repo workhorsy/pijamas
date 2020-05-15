@@ -38,15 +38,21 @@ class Assertion(T)
     context = _context;
   }
 
+  /// Identity function. Simply does nothing beyond making assertation more human friendly
   alias be = id;
+  ///ditto
   alias as = id;
+  ///ditto
   alias of = id;
+  ///ditto
   alias a = id;
+  ///ditto
   alias and = id;
+  ///ditto
   alias have = id;
+  ///ditto
   alias which = id;
-
-  /// Identity function. Simply does nothing
+  ///ditto
   Assertion id()
   {
     return this;
@@ -225,9 +231,9 @@ class Assertion(T)
       return other;
     }
 
-    /// Same that include
+    ///ditto
     alias value = include;
-    /// Same that include
+    ///ditto
     alias contain = include;
   }
 
@@ -251,12 +257,10 @@ class Assertion(T)
     }
   }
 
-  import std.regex : Regex, StaticRegex;
+  import std.regex : Regex, isRegexFor;
+  import std.traits : isSomeString;
   static if(isSomeString!T)
   {
-    private alias BasicElementOfT = Unqual!(ElementEncodingType!T);
-    private alias RegexOfT = Regex!(BasicElementOfT);
-    private alias StaticRegexOfT = StaticRegex!(BasicElementOfT);
 
     /**
      * Asserts for a string wrapped around the Assertion to match a regular expression.
@@ -271,12 +275,21 @@ class Assertion(T)
      * ```
      */
     auto match(RegEx)(RegEx re, string file = __FILE__, size_t line = __LINE__)
-      if(is(RegEx == RegexOfT) ||
-         is(RegEx == StaticRegexOfT) ||
-         isSomeString!RegEx)
+      if (isSomeString!T && isRegexFor!(RegEx, T))
     {
       import std.regex : match;
       auto m = match(context, re);
+      operator = "match";
+      ok(!m.empty, message(re), file, line);
+      return m;
+    }
+
+    ///ditto
+    auto match(U)(U re, string file = __FILE__, size_t line = __LINE__)
+      if (isSomeString!T && isSomeString!U)
+    {
+      import std.regex : regex, match;
+      auto m = match(context, regex(re));
       operator = "match";
       ok(!m.empty, message(re), file, line);
       return m;

@@ -147,15 +147,12 @@ unittest {
   }
 
   // it("returns whether a string type matches a StaticRegex",
-  // FIX Broken case with ctRegex
-  /*
-     {
+  {
      import std.regex : ctRegex;
      string str = "something 2 weird";
      str.should.match(ctRegex!`[a-z0-9]+`);
      assertThrown!Exception(str.should.match(ctRegex!`^[a-z]+$`));
-     }
-   */
+  }
 
   // it("returns whether a string type matches a string regex",
   {

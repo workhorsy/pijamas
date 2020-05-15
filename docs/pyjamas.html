@@ -600,7 +600,7 @@
   <li class="ddoc_member">
   <div class="ddoc_member_header">
   <div class="ddoc_header_anchor">
-  <a href="#Assertion.id" id="Assertion.id"><code class="code">id</code></a>
+  <a href="#Assertion.be" id="Assertion.be"><code class="code">be</code></a>
 </div>
 </div><div class="ddoc_decl">
   <section class="section">
@@ -609,7 +609,21 @@
       <div class="dlang">
         <p class="para">
           <code class="code">
-            <span class="ddoc_anchor" id="Assertion.id"></span>Assertion <code class="code">id</code>();
+            <span class="ddoc_anchor" id="Assertion.be"></span>alias <code class="code">be</code> = id;
+<br>
+<span class="ddoc_anchor" id="Assertion.as"></span>alias <code class="code">as</code> = id;
+<br>
+<span class="ddoc_anchor" id="Assertion.of"></span>alias <code class="code">of</code> = id;
+<br>
+<span class="ddoc_anchor" id="Assertion.a"></span>alias <code class="code">a</code> = id;
+<br>
+<span class="ddoc_anchor" id="Assertion.and"></span>alias <code class="code">and</code> = id;
+<br>
+<span class="ddoc_anchor" id="Assertion.have"></span>alias <code class="code">have</code> = id;
+<br>
+<span class="ddoc_anchor" id="Assertion.which"></span>alias <code class="code">which</code> = id;
+<br>
+<span class="ddoc_anchor" id="Assertion.id"></span>Assertion <code class="code">id</code>();
 
           </code>
         </p>
@@ -621,7 +635,7 @@
   <section class="section ddoc_sections">
   <div class="ddoc_summary">
   <p class="para">
-    Identity function. Simply does nothing
+    Identity function. Simply does nothing beyond making assertation more human friendly
   </p>
 </div>
 
@@ -996,6 +1010,10 @@ aClass.should.not.exists;
         <p class="para">
           <code class="code">
             <span class="ddoc_anchor" id="Assertion.include"></span>U <code class="code">include</code>(U)(U <code class="code">other</code>, string <code class="code">file</code> = __FILE__, size_t <code class="code">line</code> = __LINE__);
+<br>
+<span class="ddoc_anchor" id="Assertion.value"></span>alias <code class="code">value</code> = include;
+<br>
+<span class="ddoc_anchor" id="Assertion.contain"></span>alias <code class="code">contain</code> = include;
 
           </code>
         </p>
@@ -1007,7 +1025,7 @@ aClass.should.not.exists;
   <section class="section ddoc_sections">
   <div class="ddoc_summary">
   <p class="para">
-    Asserts for an input range wrapped around an Assertion to contain/<code class="code">include</code> a value.
+    Asserts for an input range wrapped around an Assertion to <code class="code">contain</code>/<code class="code">include</code> a <code class="code">value</code>.
 
   </p>
 </div>
@@ -1030,70 +1048,6 @@ aClass.should.not.exists;
 
   </p>
 </div>
-</section>
-
-</div>
-
-</li><li class="ddoc_member">
-  <div class="ddoc_member_header">
-  <div class="ddoc_header_anchor">
-  <a href="#Assertion.value" id="Assertion.value"><code class="code">value</code></a>
-</div>
-</div><div class="ddoc_decl">
-  <section class="section">
-    <div class="declaration">
-      <h4>Declaration</h4>
-      <div class="dlang">
-        <p class="para">
-          <code class="code">
-            <span class="ddoc_anchor" id="Assertion.value"></span>alias <code class="code">value</code> = include;
-
-          </code>
-        </p>
-      </div>
-    </div>
-  </section>
-</div>
-<div class="ddoc_decl">
-  <section class="section ddoc_sections">
-  <div class="ddoc_summary">
-  <p class="para">
-    Same that include
-  </p>
-</div>
-
-</section>
-
-</div>
-
-</li><li class="ddoc_member">
-  <div class="ddoc_member_header">
-  <div class="ddoc_header_anchor">
-  <a href="#Assertion.contain" id="Assertion.contain"><code class="code">contain</code></a>
-</div>
-</div><div class="ddoc_decl">
-  <section class="section">
-    <div class="declaration">
-      <h4>Declaration</h4>
-      <div class="dlang">
-        <p class="para">
-          <code class="code">
-            <span class="ddoc_anchor" id="Assertion.contain"></span>alias <code class="code">contain</code> = include;
-
-          </code>
-        </p>
-      </div>
-    </div>
-  </section>
-</div>
-<div class="ddoc_decl">
-  <section class="section ddoc_sections">
-  <div class="ddoc_summary">
-  <p class="para">
-    Same that include
-  </p>
-</div>
-
 </section>
 
 </div>
@@ -1161,7 +1115,9 @@ aClass.should.not.exists;
       <div class="dlang">
         <p class="para">
           <code class="code">
-            <span class="ddoc_anchor" id="Assertion.match"></span>auto <code class="code">match</code>(RegEx)(RegEx <code class="code">re</code>, string <code class="code">file</code> = __FILE__, size_t <code class="code">line</code> = __LINE__) if (is(RegEx == RegexOfT) || is(RegEx == StaticRegexOfT) || isSomeString!RegEx);
+            <span class="ddoc_anchor" id="Assertion.match"></span>auto <code class="code">match</code>(RegEx)(RegEx <code class="code">re</code>, string <code class="code">file</code> = __FILE__, size_t <code class="code">line</code> = __LINE__) if (isSomeString!T &amp;&amp; isRegexFor!(RegEx, T));
+<br>
+auto <code class="code">match</code>(U)(U <code class="code">re</code>, string <code class="code">file</code> = __FILE__, size_t <code class="code">line</code> = __LINE__) if (isSomeString!T &amp;&amp; isSomeString!U);
 
           </code>
         </p>
