@@ -10,7 +10,6 @@ import std.algorithm : canFind, isSorted;
 import std.conv : to;
 import std.range : isInputRange, isForwardRange, hasLength, ElementEncodingType, empty;
 import std.regex : Regex, StaticRegex;
-import std.string : format;
 import std.traits : hasMember, isSomeString, isCallable, isAssociativeArray,
   isImplicitlyConvertible, Unqual;
 
@@ -31,10 +30,11 @@ class Assertion(T)
   private string operator = "be";
   private T context;
 
-  this()
+  this() @safe pure nothrow
   {
-  };
-  this(T _context)
+  }
+
+  this(T _context) @safe pure nothrow
   {
     context = _context;
   }
@@ -54,7 +54,7 @@ class Assertion(T)
   ///ditto
   alias which = id;
   ///ditto
-  Assertion id()
+  Assertion id() @nogc @safe pure nothrow
   {
     return this;
   }
@@ -68,14 +68,14 @@ class Assertion(T)
    * 10.should.not.equal(10); // Throws an Exception "expected 10 not to be 10"
    * ```
    */
-  Assertion not()
+  Assertion not() @nogc @safe pure nothrow
   {
     negated = !negated;
     return this;
   }
 
   // Helper that evaluates the asserted expression
-  U ok(U)(U expr, lazy string message, string file = __FILE__, size_t line = __LINE__)
+  private U ok(U)(U expr, lazy string message, string file = __FILE__, size_t line = __LINE__) @safe pure
   {
     if (negated ? !expr : expr) {
       return expr;
@@ -92,10 +92,9 @@ class Assertion(T)
    * 255.should.equal(10); // Throws an Exception "expected 255 to equal 10"
    * ```
    */
-  T equal(U)(U other, string file = __FILE__, size_t line = __LINE__)
+  T equal(U)(U other, string file = __FILE__, size_t line = __LINE__) @safe
   {
-    auto t_other = other.to!T;
-    ok(context == other, message(other), file, line);
+    this.ok(context == other, this.message(other), file, line);
     return context;
   }
 
@@ -113,7 +112,7 @@ class Assertion(T)
    * aClass.should.not.exists;
    * ```
    */
-  T exist(string file = __FILE__, size_t line = __LINE__)
+  T exist(string file = __FILE__, size_t line = __LINE__) @safe
   {
     import std.traits : isPointer, isSomeString;
 
@@ -123,22 +122,24 @@ class Assertion(T)
       }))
     {
       if (context is null) {
-        ok(false, message, file, line);
+        this.ok(false, this.message, file, line);
       }
     }
     return context;
   }
 
   // Generates string message when an assertation fails
-  string message(U)(U other)
+  private string message(U)(U other) @trusted
   {
+    import std.string : format;
     return format("expected %s to %s%s%s", context.to!string, (negated ?
         "not " : ""), operator, (" " ~ other.to!string));
   }
 
   // Generates string message when an assertation fails
-  string message()
+  private string message() @trusted
   {
+    import std.string : format;
     return format("expected %s to %s%s", context.to!string, (negated ? "not " : ""), operator);
   }
 
@@ -151,10 +152,10 @@ class Assertion(T)
    * 10.should.be.biggerThan(1);
    * ```
    */
-  bool biggerThan(U)(U other, string file = __FILE__, size_t line = __LINE__)
+  bool biggerThan(U)(U other, string file = __FILE__, size_t line = __LINE__) @safe
   {
     operator = "be bigger than";
-    return ok(context > other, message(other), file, line);
+    return this.ok(context > other, this.message(other), file, line);
   }
 
   /**
@@ -166,10 +167,10 @@ class Assertion(T)
    * false.should.be.smallerThan(true);
    * ```
    */
-  bool smallerThan(U)(U other, string file = __FILE__, size_t line = __LINE__)
+  bool smallerThan(U)(U other, string file = __FILE__, size_t line = __LINE__) @safe
   {
     operator = "be smaller than";
-    return ok(context < other, message(other), file, line);
+    return this.ok(context < other, this.message(other), file, line);
   }
 
   static if (isForwardRange!T && __traits(compiles, context.isSorted))
@@ -183,10 +184,10 @@ class Assertion(T)
      * [1, 2, 0, 4].should.not.be.sorted;
      * ```
      */
-    bool sorted(string file = __FILE__, size_t line = __LINE__)
+    bool sorted(string file = __FILE__, size_t line = __LINE__) @safe
     {
       operator = "be sorted";
-      return ok(context.isSorted, message, file, line);
+      return this.ok(context.isSorted, this.message, file, line);
     }
   }
 
@@ -200,10 +201,10 @@ class Assertion(T)
      * ["something": 10].should.have.key("something");
      * ```
      */
-    void key(U)(U other, string file = __FILE__, size_t line = __LINE__)
+    void key(U)(U other, string file = __FILE__, size_t line = __LINE__) @safe
     {
       operator = "have key";
-      ok(!(other !in context), message(other), file, line);
+      this.ok(!(other !in context), this.message(other), file, line);
     }
   }
 
@@ -219,7 +220,7 @@ class Assertion(T)
      * "something".should.include("th");
      * ```
      */
-    U include(U)(U other, string file = __FILE__, size_t line = __LINE__)
+    U include(U)(U other, string file = __FILE__, size_t line = __LINE__) @trusted
     {
       static if (isAssociativeArray!T) {
         auto pool = context.values;
@@ -228,7 +229,7 @@ class Assertion(T)
       }
 
       operator = "contain value";
-      ok(canFind(pool, other), message(other), file, line);
+      this.ok(canFind(pool, other), this.message(other), file, line);
       return other;
     }
 
@@ -250,10 +251,10 @@ class Assertion(T)
      * // ^^ - Throws an Exception "expected 'abcdefg' to have length of 0"
      * ```
      */
-    U length(U)(U len, string file = __FILE__, size_t line = __LINE__)
+    U length(U)(U len, string file = __FILE__, size_t line = __LINE__) @safe
     {
       operator = "have length of";
-      ok(context.length == len, message(len), file, line);
+      this.ok(context.length == len, this.message(len), file, line);
       return len;
     }
 
@@ -266,10 +267,10 @@ class Assertion(T)
      * "".should.be.empty;
      * ```
      */
-    bool empty(string file = __FILE__, size_t line = __LINE__)
+    bool empty(string file = __FILE__, size_t line = __LINE__) @safe
     {
       operator = "is empty";
-      return ok(context.length == 0, message(), file, line);
+      return this.ok(context.length == 0, this.message(), file, line);
     }
   }
 
@@ -291,26 +292,26 @@ class Assertion(T)
      * "1234numbers".should.not.match(`^[a-z]+`);
      * ```
      */
-    auto match(RegEx)(RegEx re, string file = __FILE__, size_t line = __LINE__)
+    auto match(RegEx)(RegEx re, string file = __FILE__, size_t line = __LINE__) @safe
         if (isSomeString!T && isRegexFor!(RegEx, T))
     {
       import std.regex : match;
 
       auto m = match(context, re);
       operator = "match";
-      ok(!m.empty, message(re), file, line);
+      this.ok(!m.empty, this.message(re), file, line);
       return m;
     }
 
     ///ditto
-    auto match(U)(U re, string file = __FILE__, size_t line = __LINE__)
+    auto match(U)(U re, string file = __FILE__, size_t line = __LINE__) @safe
         if (isSomeString!T && isSomeString!U)
     {
       import std.regex : regex, match;
 
       auto m = match(context, regex(re));
       operator = "match";
-      ok(!m.empty, message(re), file, line);
+      this.ok(!m.empty, this.message(re), file, line);
       return m;
     }
   }
@@ -326,9 +327,9 @@ class Assertion(T)
      * (1 == 1).should.be.True;
      * ```
      */
-    bool True(string file = __FILE__, size_t line = __LINE__)
+    bool True(string file = __FILE__, size_t line = __LINE__) @safe
     {
-      return ok(context == true, message(true), file, line);
+      return this.ok(context == true, this.message(true), file, line);
     }
 
     /**
@@ -340,9 +341,9 @@ class Assertion(T)
      * (1 != 1).should.be.False;
      * ```
      */
-    bool False(string file = __FILE__, size_t line = __LINE__)
+    bool False(string file = __FILE__, size_t line = __LINE__) @safe
     {
-      return !ok(context == false, message(false), file, line);
+      return !this.ok(context == false, this.message(false), file, line);
     }
   }
 
@@ -368,30 +369,30 @@ class Assertion(T)
      * should(&notThrowing).not.Throw;
      * ```
      */
-    void Throw(T : Throwable = Exception)(string file = __FILE__, size_t line = __LINE__)
+    void Throw(T : Throwable = Exception)(string file = __FILE__, size_t line = __LINE__) @safe
     {
       operator = "throw";
       bool thrown = false;
       try {
-        context();
+        this.context();
       } catch (T) {
         thrown = true;
       }
-      ok(thrown, message(), file, line);
+      this.ok(thrown, this.message(), file, line);
     }
   }
 
 }
 
 @("Should(v)")
-unittest
+@safe unittest
 {
   //  it("returns an Assertion", {
   assert(is(typeof(10.should) == Assertion!int));
 }
 
 @("Should Assertion")
-unittest
+@safe unittest
 {
   //  it("can be instantiated for ranges of structs without `opCmp`", {
   struct Test
@@ -404,7 +405,7 @@ unittest
 }
 
 @("Should Assertion.message")
-unittest
+@safe unittest
 {
   //  it("returns the correct message for binary operators",
   {
