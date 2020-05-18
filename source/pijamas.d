@@ -17,7 +17,7 @@ import std.traits : hasMember, isSomeString, isCallable, isAssociativeArray,
  * Pijamas exports a single function should meant for public use. Because of D’s lookup shortcut syntax, one is able
  * to use both should(obj) and obj.should to get an object wrapped around an Assertion instance
  */
-Assertion!T should(T)(T context)
+Assertion!T should(T)(auto ref T context)
 {
   return new Assertion!T(context);
 }
@@ -35,6 +35,11 @@ class Assertion(T)
   }
 
   this(T _context) @safe pure nothrow
+  {
+    context = _context;
+  }
+
+  this(ref T _context) @safe pure nothrow
   {
     context = _context;
   }

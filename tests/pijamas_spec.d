@@ -70,6 +70,21 @@ import pijamas;
   }
 }
 
+@("Asserting a field of a no copiable Struct")
+@safe unittest
+{
+  struct S {
+    this(this) @disable;
+
+    int x;
+    size_t length;
+  }
+
+  auto s = S(123, 10);
+  s.x.should.be.equal(123);
+  // s.should.have.length(10); // Error is not copyable because it is annotated with @disable
+}
+
 @("Should Assertion.True")
 @safe unittest
 {
