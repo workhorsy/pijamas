@@ -546,7 +546,7 @@
       <div class="dlang">
         <p class="para">
           <code class="code">
-            <span class="ddoc_anchor" id="should"></span>Assertion!T <code class="code">should</code>(T)(T <code class="code">context</code>);
+            <span class="ddoc_anchor" id="should"></span>Assertion!T <code class="code">should</code>(T)(auto ref T <code class="code">context</code>);
 
           </code>
         </p>
@@ -623,7 +623,7 @@
 <br>
 <span class="ddoc_anchor" id="Assertion.which"></span>alias <code class="code">which</code> = id;
 <br>
-<span class="ddoc_anchor" id="Assertion.id"></span>Assertion <code class="code">id</code>();
+<span class="ddoc_anchor" id="Assertion.id"></span>pure nothrow @nogc @safe Assertion <code class="code">id</code>();
 
           </code>
         </p>
@@ -655,7 +655,7 @@
       <div class="dlang">
         <p class="para">
           <code class="code">
-            <span class="ddoc_anchor" id="Assertion.not"></span>Assertion <code class="code">not</code>();
+            <span class="ddoc_anchor" id="Assertion.not"></span>pure nothrow @nogc @safe Assertion <code class="code">not</code>();
 
           </code>
         </p>
@@ -705,7 +705,7 @@
       <div class="dlang">
         <p class="para">
           <code class="code">
-            <span class="ddoc_anchor" id="Assertion.equal"></span>T <code class="code">equal</code>(U)(U <code class="code">other</code>, string <code class="code">file</code> = __FILE__, size_t <code class="code">line</code> = __LINE__);
+            <span class="ddoc_anchor" id="Assertion.equal"></span>@safe T <code class="code">equal</code>(U)(U <code class="code">other</code>, string <code class="code">file</code> = __FILE__, size_t <code class="code">line</code> = __LINE__);
 
           </code>
         </p>
@@ -755,7 +755,7 @@
       <div class="dlang">
         <p class="para">
           <code class="code">
-            <span class="ddoc_anchor" id="Assertion.exist"></span>T <code class="code">exist</code>(string <code class="code">file</code> = __FILE__, size_t <code class="code">line</code> = __LINE__);
+            <span class="ddoc_anchor" id="Assertion.exist"></span>@safe T <code class="code">exist</code>(string <code class="code">file</code> = __FILE__, size_t <code class="code">line</code> = __LINE__);
 
           </code>
         </p>
@@ -810,7 +810,7 @@ aClass.should.not.exists;
       <div class="dlang">
         <p class="para">
           <code class="code">
-            <span class="ddoc_anchor" id="Assertion.biggerThan"></span>bool <code class="code">biggerThan</code>(U)(U <code class="code">other</code>, string <code class="code">file</code> = __FILE__, size_t <code class="code">line</code> = __LINE__);
+            <span class="ddoc_anchor" id="Assertion.biggerThan"></span>@safe bool <code class="code">biggerThan</code>(U)(U <code class="code">other</code>, string <code class="code">file</code> = __FILE__, size_t <code class="code">line</code> = __LINE__);
 
           </code>
         </p>
@@ -860,7 +860,7 @@ aClass.should.not.exists;
       <div class="dlang">
         <p class="para">
           <code class="code">
-            <span class="ddoc_anchor" id="Assertion.smallerThan"></span>bool <code class="code">smallerThan</code>(U)(U <code class="code">other</code>, string <code class="code">file</code> = __FILE__, size_t <code class="code">line</code> = __LINE__);
+            <span class="ddoc_anchor" id="Assertion.smallerThan"></span>@safe bool <code class="code">smallerThan</code>(U)(U <code class="code">other</code>, string <code class="code">file</code> = __FILE__, size_t <code class="code">line</code> = __LINE__);
 
           </code>
         </p>
@@ -910,7 +910,7 @@ aClass.should.not.exists;
       <div class="dlang">
         <p class="para">
           <code class="code">
-            <span class="ddoc_anchor" id="Assertion.sorted"></span>bool <code class="code">sorted</code>(string <code class="code">file</code> = __FILE__, size_t <code class="code">line</code> = __LINE__);
+            <span class="ddoc_anchor" id="Assertion.sorted"></span>@safe bool <code class="code">sorted</code>(string <code class="code">file</code> = __FILE__, size_t <code class="code">line</code> = __LINE__);
 
           </code>
         </p>
@@ -960,7 +960,7 @@ aClass.should.not.exists;
       <div class="dlang">
         <p class="para">
           <code class="code">
-            <span class="ddoc_anchor" id="Assertion.key"></span>void <code class="code">key</code>(U)(U <code class="code">other</code>, string <code class="code">file</code> = __FILE__, size_t <code class="code">line</code> = __LINE__);
+            <span class="ddoc_anchor" id="Assertion.key"></span>@safe void <code class="code">key</code>(U)(U <code class="code">other</code>, string <code class="code">file</code> = __FILE__, size_t <code class="code">line</code> = __LINE__);
 
           </code>
         </p>
@@ -1009,7 +1009,7 @@ aClass.should.not.exists;
       <div class="dlang">
         <p class="para">
           <code class="code">
-            <span class="ddoc_anchor" id="Assertion.include"></span>U <code class="code">include</code>(U)(U <code class="code">other</code>, string <code class="code">file</code> = __FILE__, size_t <code class="code">line</code> = __LINE__);
+            <span class="ddoc_anchor" id="Assertion.include"></span>@trusted U <code class="code">include</code>(U)(U <code class="code">other</code>, string <code class="code">file</code> = __FILE__, size_t <code class="code">line</code> = __LINE__);
 <br>
 <span class="ddoc_anchor" id="Assertion.value"></span>alias <code class="code">value</code> = include;
 <br>
@@ -1064,7 +1064,7 @@ aClass.should.not.exists;
       <div class="dlang">
         <p class="para">
           <code class="code">
-            <span class="ddoc_anchor" id="Assertion.length"></span>U <code class="code">length</code>(U)(U <code class="code">len</code>, string <code class="code">file</code> = __FILE__, size_t <code class="code">line</code> = __LINE__);
+            <span class="ddoc_anchor" id="Assertion.length"></span>@safe U <code class="code">length</code>(U)(U <code class="code">len</code>, string <code class="code">file</code> = __FILE__, size_t <code class="code">line</code> = __LINE__);
 
           </code>
         </p>
@@ -1115,7 +1115,7 @@ aClass.should.not.exists;
       <div class="dlang">
         <p class="para">
           <code class="code">
-            <span class="ddoc_anchor" id="Assertion.empty"></span>bool <code class="code">empty</code>(string <code class="code">file</code> = __FILE__, size_t <code class="code">line</code> = __LINE__);
+            <span class="ddoc_anchor" id="Assertion.empty"></span>@safe bool <code class="code">empty</code>(string <code class="code">file</code> = __FILE__, size_t <code class="code">line</code> = __LINE__);
 
           </code>
         </p>
@@ -1165,9 +1165,9 @@ aClass.should.not.exists;
       <div class="dlang">
         <p class="para">
           <code class="code">
-            <span class="ddoc_anchor" id="Assertion.match"></span>auto <code class="code">match</code>(RegEx)(RegEx <code class="code">re</code>, string <code class="code">file</code> = __FILE__, size_t <code class="code">line</code> = __LINE__) if (isSomeString!T &amp;&amp; isRegexFor!(RegEx, T));
+            <span class="ddoc_anchor" id="Assertion.match"></span>@safe auto <code class="code">match</code>(RegEx)(RegEx <code class="code">re</code>, string <code class="code">file</code> = __FILE__, size_t <code class="code">line</code> = __LINE__) if (isSomeString!T &amp;&amp; isRegexFor!(RegEx, T));
 <br>
-auto <code class="code">match</code>(U)(U <code class="code">re</code>, string <code class="code">file</code> = __FILE__, size_t <code class="code">line</code> = __LINE__) if (isSomeString!T &amp;&amp; isSomeString!U);
+@safe auto <code class="code">match</code>(U)(U <code class="code">re</code>, string <code class="code">file</code> = __FILE__, size_t <code class="code">line</code> = __LINE__) if (isSomeString!T &amp;&amp; isSomeString!U);
 
           </code>
         </p>
@@ -1220,7 +1220,7 @@ auto <code class="code">match</code>(U)(U <code class="code">re</code>, string <
       <div class="dlang">
         <p class="para">
           <code class="code">
-            <span class="ddoc_anchor" id="Assertion.True"></span>bool <code class="code">True</code>(string <code class="code">file</code> = __FILE__, size_t <code class="code">line</code> = __LINE__);
+            <span class="ddoc_anchor" id="Assertion.True"></span>@safe bool <code class="code">True</code>(string <code class="code">file</code> = __FILE__, size_t <code class="code">line</code> = __LINE__);
 
           </code>
         </p>
@@ -1270,7 +1270,7 @@ auto <code class="code">match</code>(U)(U <code class="code">re</code>, string <
       <div class="dlang">
         <p class="para">
           <code class="code">
-            <span class="ddoc_anchor" id="Assertion.False"></span>bool <code class="code">False</code>(string <code class="code">file</code> = __FILE__, size_t <code class="code">line</code> = __LINE__);
+            <span class="ddoc_anchor" id="Assertion.False"></span>@safe bool <code class="code">False</code>(string <code class="code">file</code> = __FILE__, size_t <code class="code">line</code> = __LINE__);
 
           </code>
         </p>
@@ -1320,7 +1320,7 @@ auto <code class="code">match</code>(U)(U <code class="code">re</code>, string <
       <div class="dlang">
         <p class="para">
           <code class="code">
-            <span class="ddoc_anchor" id="Assertion.Throw"></span>void <code class="code">Throw</code>(T : Throwable = Exception)(string <code class="code">file</code> = __FILE__, size_t <code class="code">line</code> = __LINE__);
+            <span class="ddoc_anchor" id="Assertion.Throw"></span>@safe void <code class="code">Throw</code>(T : Throwable = Exception)(string <code class="code">file</code> = __FILE__, size_t <code class="code">line</code> = __LINE__);
 
           </code>
         </p>
