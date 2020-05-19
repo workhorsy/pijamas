@@ -2,6 +2,10 @@
 layout: default
 title: Changelog
 ---
+# v0.3.1
+
+* Make Pijamas @safe
+
 # v0.3.0
 
 * Rename module to pijamas.

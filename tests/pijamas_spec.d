@@ -11,7 +11,7 @@ import std.exception;
 import pijamas;
 
 @("Should Assertion.exist")
-unittest
+@trusted unittest
 {
   //  it("existence of string",
   {
@@ -70,8 +70,23 @@ unittest
   }
 }
 
+@("Asserting a field of a no copiable Struct")
+@safe unittest
+{
+  struct S {
+    this(this) @disable;
+
+    int x;
+    size_t length;
+  }
+
+  auto s = S(123, 10);
+  s.x.should.be.equal(123);
+  // s.should.have.length(10); // Error is not copyable because it is annotated with @disable
+}
+
 @("Should Assertion.True")
-unittest
+@safe unittest
 {
   // it("returns and asserts for true",
   {
@@ -87,7 +102,7 @@ unittest
 }
 
 @("Should Assertion.False")
-unittest
+@safe unittest
 {
   // it("returns and asserts for false",
   {
@@ -103,7 +118,7 @@ unittest
 }
 
 @("Should Assertion.equal")
-unittest
+@safe unittest
 {
   //  it("asserts whether two values are equal",
   {
@@ -149,7 +164,7 @@ unittest
 }
 
 @("Should Assertion.match")
-unittest
+@safe unittest
 {
   // it("returns whether a string type matches a Regex",
   {
@@ -179,7 +194,7 @@ unittest
 }
 
 @("Should Assertion.include")
-unittest
+@safe unittest
 {
   // it("asserts for arrays containing elements",
   {
@@ -209,7 +224,7 @@ unittest
 }
 
 @("Should Assertion.length")
-unittest
+@safe unittest
 {
   // it("asserts for length equality for strings",
   {
@@ -236,7 +251,7 @@ unittest
 }
 
 @("Should Assertion.empty")
-unittest
+@safe unittest
 {
   // it("asserts that a string is empty"
   {
@@ -268,7 +283,7 @@ unittest
 }
 
 @("Should Assertion.Throw")
-unittest
+@safe unittest
 {
   // it("asserts whether an expressions throws",
   {
@@ -290,7 +305,7 @@ unittest
 }
 
 @("Should Assertion.key")
-unittest
+@safe unittest
 {
   // it("asserts for `key` existence in types with `opIndex` defined",
   {
@@ -303,7 +318,7 @@ unittest
 }
 
 @("Should Assertion.sorted")
-unittest
+@safe unittest
 {
   // it("asserts whether a range is sorted",
   {
@@ -317,7 +332,7 @@ unittest
 }
 
 @("Should Assertion.biggerThan")
-unittest
+@safe unittest
 {
   //it("asserts whether a value is bigger than other",
   {
@@ -333,7 +348,7 @@ unittest
 }
 
 @("Should Assertion.smallerThan")
-unittest
+@safe unittest
 {
   // it("asserts whether a value is smaller than other",
   {
