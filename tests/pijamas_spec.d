@@ -150,16 +150,42 @@ import pijamas;
 
   //  it("works for structs",
   {
-    struct Example
+    struct ExampleS
     {
       bool a = false;
       string f = "something";
     }
 
-    auto e = Example(true, "here");
-    e.should.be.equal(Example(true, "here"));
-    e.should.be.not.equal(Example(true, "asdf"));
-    assertThrown!Exception(e.should.be.equal(Example(true, "asdf")));
+    auto e = ExampleS(true, "here");
+    e.should.be.equal(ExampleS(true, "here"));
+    e.should.be.not.equal(ExampleS(true, "asdf"));
+    assertThrown!Exception(e.should.be.equal(ExampleS(true, "asdf")));
+  }
+
+  //  it("works for classes",
+  {
+    class ExampleC
+    {
+      int x;
+      this (int x)
+      {
+        this.x = x;
+      }
+
+      override bool opEquals(Object o) const// @trusted
+      {
+        if (ExampleC rhs = cast(ExampleC)o) {
+          return this.x == rhs.x;
+        }
+        return false;
+      }
+    }
+
+    auto e = new ExampleC(33);
+    e.should.be.equal(new ExampleC(33));
+    e.should.be.not.equal(new ExampleC(1));
+    assertThrown!Exception(e.should.be.equal(new ExampleC(1)));
+
   }
 }
 
