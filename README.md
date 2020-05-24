@@ -64,7 +64,7 @@ Asserts for aproximated equality of float types. Returns the value wrapped aroun
 assertion.
 ```d
 (1.0f).should.be.approxEqual(1.00000001);
-(1.0f).should.no.be.approxEqual(1.001);
+(1.0f).should.not.be.approxEqual(1.001);
 ```
 
 #### `T exist(string file = __FILE__, size_t line = __LINE__);`
