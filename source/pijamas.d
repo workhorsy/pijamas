@@ -104,6 +104,27 @@ class Assertion(T)
   }
 
   /**
+   * Asserts that a float type is aproximated equal. Returns the valued wrapped around the assertion
+   *
+   * Examples:
+   * ```
+   * double d = 0.1;
+   * double d2 = d + 1e-05;
+   * d.should.not.be.equal(d2);
+   * d.should.be.approxEqual(d2);
+   * ```
+   */
+  T approxEqual(U = double)(U other, U maxRelDiff = 1e-2, U maxAbsDiff = 1e-05,
+      string file = __FILE__, size_t line = __LINE__) @trusted
+      if (is(T : real) && __traits(isFloating, T) && is(U : real) && __traits(isFloating, U))
+  {
+    import std.math : approxEqual;
+    operator = "be approximated equal than";
+    this.ok(approxEqual(context, other, maxRelDiff, maxAbsDiff), this.message(other), file, line);
+    return context;
+  }
+
+  /**
    * Asserts whether a value exists - currently simply compares it with null, if it is a pointer, a class or a string.
    * Returns the value wrapped around the assertion.
    *

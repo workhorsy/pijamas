@@ -189,6 +189,51 @@ import pijamas;
   }
 }
 
+@("Should Assertion.approxEqual")
+@safe unittest
+{
+  // it("asserts that the identical value are identical")
+  {
+    float f = 0.01;
+    f.should.be.approxEqual(f);
+    
+    double d = 0.01;
+    d.should.be.approxEqual(d);
+    
+    real r = 0.01;
+    r.should.be.approxEqual(r);
+  }
+  
+  // it("handles comparing diferent float types")
+  {
+    float f = 0.01;
+    double d = 0.01;
+    real r = 0.01;
+    f.should.be.approxEqual(d);
+    f.should.be.approxEqual(r);
+    
+    d.should.be.approxEqual(f);
+    d.should.be.approxEqual(r);
+    
+    r.should.be.approxEqual(f);
+    r.should.be.approxEqual(d);
+  }
+
+  // it("asserts that two nearly identical float values are approximated equal")
+  {
+    double d = 0.1;
+    double d2 = d + 1e-05;
+    d.should.not.be.equal(d2);
+    d.should.be.approxEqual(d2);
+
+    // and("when increase the difference, it must not be approximated equals")
+    d2 += 1e-2;
+    d.should.not.be.equal(d2);
+    d.should.not.be.approxEqual(d2);
+    assertThrown!Exception(d.should.be.approxEqual(d2));
+  }
+}
+
 @("Should Assertion.match")
 @safe unittest
 {
