@@ -97,9 +97,30 @@ class Assertion(T)
    * 255.should.equal(10); // Throws an Exception "expected 255 to equal 10"
    * ```
    */
-  T equal(U)(U other, string file = __FILE__, size_t line = __LINE__) @safe
+  T equal(U)(U other, string file = __FILE__, size_t line = __LINE__) @trusted
   {
     this.ok(context == other, this.message(other), file, line);
+    return context;
+  }
+
+  /**
+   * Asserts that a float type is aproximated equal. Returns the valued wrapped around the assertion
+   *
+   * Examples:
+   * ```
+   * double d = 0.1;
+   * double d2 = d + 1e-05;
+   * d.should.not.be.equal(d2);
+   * d.should.be.approxEqual(d2);
+   * ```
+   */
+  T approxEqual(U = double)(U other, U maxRelDiff = 1e-2, U maxAbsDiff = 1e-05,
+      string file = __FILE__, size_t line = __LINE__) @trusted
+      if (is(T : real) && __traits(isFloating, T) && is(U : real) && __traits(isFloating, U))
+  {
+    import std.math : approxEqual;
+    operator = "be approximated equal than";
+    this.ok(approxEqual(context, other, maxRelDiff, maxAbsDiff), this.message(other), file, line);
     return context;
   }
 
@@ -157,7 +178,7 @@ class Assertion(T)
    * 10.should.be.biggerThan(1);
    * ```
    */
-  bool biggerThan(U)(U other, string file = __FILE__, size_t line = __LINE__) @safe
+  bool biggerThan(U)(U other, string file = __FILE__, size_t line = __LINE__) @trusted
   {
     operator = "be bigger than";
     return this.ok(context > other, this.message(other), file, line);
@@ -172,7 +193,7 @@ class Assertion(T)
    * false.should.be.smallerThan(true);
    * ```
    */
-  bool smallerThan(U)(U other, string file = __FILE__, size_t line = __LINE__) @safe
+  bool smallerThan(U)(U other, string file = __FILE__, size_t line = __LINE__) @trusted
   {
     operator = "be smaller than";
     return this.ok(context < other, this.message(other), file, line);
@@ -189,7 +210,7 @@ class Assertion(T)
      * [1, 2, 0, 4].should.not.be.sorted;
      * ```
      */
-    bool sorted(string file = __FILE__, size_t line = __LINE__) @safe
+    bool sorted(string file = __FILE__, size_t line = __LINE__) @trusted
     {
       operator = "be sorted";
       return this.ok(context.isSorted, this.message, file, line);
@@ -206,7 +227,7 @@ class Assertion(T)
      * ["something": 10].should.have.key("something");
      * ```
      */
-    void key(U)(U other, string file = __FILE__, size_t line = __LINE__) @safe
+    void key(U)(U other, string file = __FILE__, size_t line = __LINE__) @trusted
     {
       operator = "have key";
       this.ok(!(other !in context), this.message(other), file, line);
@@ -256,7 +277,7 @@ class Assertion(T)
      * // ^^ - Throws an Exception "expected 'abcdefg' to have length of 0"
      * ```
      */
-    U length(U)(U len, string file = __FILE__, size_t line = __LINE__) @safe
+    U length(U)(U len, string file = __FILE__, size_t line = __LINE__) @trusted
     {
       operator = "have length of";
       this.ok(context.length == len, this.message(len), file, line);
@@ -272,7 +293,7 @@ class Assertion(T)
      * "".should.be.empty;
      * ```
      */
-    bool empty(string file = __FILE__, size_t line = __LINE__) @safe
+    bool empty(string file = __FILE__, size_t line = __LINE__) @trusted
     {
       operator = "is empty";
       return this.ok(context.length == 0, this.message(), file, line);

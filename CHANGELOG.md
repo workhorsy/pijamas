@@ -1,3 +1,8 @@
+# v0.3.2
+
+* .equals and others, must be @trusted to allow to call @system opEquals
+* .approxEquals to do approximated equality of float types
+
 # v0.3.1
 
 * Make Pijamas @safe

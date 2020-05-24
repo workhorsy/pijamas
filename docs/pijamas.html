@@ -705,7 +705,7 @@
       <div class="dlang">
         <p class="para">
           <code class="code">
-            <span class="ddoc_anchor" id="Assertion.equal"></span>@safe T <code class="code">equal</code>(U)(U <code class="code">other</code>, string <code class="code">file</code> = __FILE__, size_t <code class="code">line</code> = __LINE__);
+            <span class="ddoc_anchor" id="Assertion.equal"></span>@trusted T <code class="code">equal</code>(U)(U <code class="code">other</code>, string <code class="code">file</code> = __FILE__, size_t <code class="code">line</code> = __LINE__);
 
           </code>
         </p>
@@ -732,6 +732,58 @@
         <li><code class="code">[1, 2, 3, 4].should.<span class="psymbol">equal</span>([1, 2, 3, 4]);
 255.should.<span class="psymbol">equal</span>(10); <span class="comment">// Throws an Exception "expected 255 to equal 10"
 </span></code></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+  </p>
+</div>
+</section>
+
+</div>
+
+</li><li class="ddoc_member">
+  <div class="ddoc_member_header">
+  <div class="ddoc_header_anchor">
+  <a href="#Assertion.approxEqual" id="Assertion.approxEqual"><code class="code">approxEqual</code></a>
+</div>
+</div><div class="ddoc_decl">
+  <section class="section">
+    <div class="declaration">
+      <h4>Declaration</h4>
+      <div class="dlang">
+        <p class="para">
+          <code class="code">
+            <span class="ddoc_anchor" id="Assertion.approxEqual"></span>@trusted T <code class="code">approxEqual</code>(U = double)(U <code class="code">other</code>, U <code class="code">maxRelDiff</code> = 0.01, U <code class="code">maxAbsDiff</code> = 1e-05, string <code class="code">file</code> = __FILE__, size_t <code class="code">line</code> = __LINE__) if (is(T : real) &amp;&amp; __traits(isFloating, T) &amp;&amp; is(U : real) &amp;&amp; __traits(isFloating, U));
+
+          </code>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="ddoc_decl">
+  <section class="section ddoc_sections">
+  <div class="ddoc_summary">
+  <p class="para">
+    Asserts that a float type is aproximated equal. Returns the valued wrapped around the assertion
+
+  </p>
+</div>
+<div class="ddoc_examples">
+  <h4>Examples</h4>
+  <p class="para">
+    
+<section class="code_listing">
+  <div class="code_sample">
+    <div class="dlang">
+      <ol class="code_lines">
+        <li><code class="code"><span class="keyword">double</span> d = 0.1;
+<span class="keyword">double</span> d2 = d + 1e-05;
+d.should.not.be.equal(d2);
+d.should.be.<span class="psymbol">approxEqual</span>(d2);
+</code></li>
       </ol>
     </div>
   </div>
@@ -810,7 +862,7 @@ aClass.should.not.exists;
       <div class="dlang">
         <p class="para">
           <code class="code">
-            <span class="ddoc_anchor" id="Assertion.biggerThan"></span>@safe bool <code class="code">biggerThan</code>(U)(U <code class="code">other</code>, string <code class="code">file</code> = __FILE__, size_t <code class="code">line</code> = __LINE__);
+            <span class="ddoc_anchor" id="Assertion.biggerThan"></span>@trusted bool <code class="code">biggerThan</code>(U)(U <code class="code">other</code>, string <code class="code">file</code> = __FILE__, size_t <code class="code">line</code> = __LINE__);
 
           </code>
         </p>
@@ -860,7 +912,7 @@ aClass.should.not.exists;
       <div class="dlang">
         <p class="para">
           <code class="code">
-            <span class="ddoc_anchor" id="Assertion.smallerThan"></span>@safe bool <code class="code">smallerThan</code>(U)(U <code class="code">other</code>, string <code class="code">file</code> = __FILE__, size_t <code class="code">line</code> = __LINE__);
+            <span class="ddoc_anchor" id="Assertion.smallerThan"></span>@trusted bool <code class="code">smallerThan</code>(U)(U <code class="code">other</code>, string <code class="code">file</code> = __FILE__, size_t <code class="code">line</code> = __LINE__);
 
           </code>
         </p>
@@ -910,7 +962,7 @@ aClass.should.not.exists;
       <div class="dlang">
         <p class="para">
           <code class="code">
-            <span class="ddoc_anchor" id="Assertion.sorted"></span>@safe bool <code class="code">sorted</code>(string <code class="code">file</code> = __FILE__, size_t <code class="code">line</code> = __LINE__);
+            <span class="ddoc_anchor" id="Assertion.sorted"></span>@trusted bool <code class="code">sorted</code>(string <code class="code">file</code> = __FILE__, size_t <code class="code">line</code> = __LINE__);
 
           </code>
         </p>
@@ -960,7 +1012,7 @@ aClass.should.not.exists;
       <div class="dlang">
         <p class="para">
           <code class="code">
-            <span class="ddoc_anchor" id="Assertion.key"></span>@safe void <code class="code">key</code>(U)(U <code class="code">other</code>, string <code class="code">file</code> = __FILE__, size_t <code class="code">line</code> = __LINE__);
+            <span class="ddoc_anchor" id="Assertion.key"></span>@trusted void <code class="code">key</code>(U)(U <code class="code">other</code>, string <code class="code">file</code> = __FILE__, size_t <code class="code">line</code> = __LINE__);
 
           </code>
         </p>
@@ -1064,7 +1116,7 @@ aClass.should.not.exists;
       <div class="dlang">
         <p class="para">
           <code class="code">
-            <span class="ddoc_anchor" id="Assertion.length"></span>@safe U <code class="code">length</code>(U)(U <code class="code">len</code>, string <code class="code">file</code> = __FILE__, size_t <code class="code">line</code> = __LINE__);
+            <span class="ddoc_anchor" id="Assertion.length"></span>@trusted U <code class="code">length</code>(U)(U <code class="code">len</code>, string <code class="code">file</code> = __FILE__, size_t <code class="code">line</code> = __LINE__);
 
           </code>
         </p>
@@ -1115,7 +1167,7 @@ aClass.should.not.exists;
       <div class="dlang">
         <p class="para">
           <code class="code">
-            <span class="ddoc_anchor" id="Assertion.empty"></span>@safe bool <code class="code">empty</code>(string <code class="code">file</code> = __FILE__, size_t <code class="code">line</code> = __LINE__);
+            <span class="ddoc_anchor" id="Assertion.empty"></span>@trusted bool <code class="code">empty</code>(string <code class="code">file</code> = __FILE__, size_t <code class="code">line</code> = __LINE__);
 
           </code>
         </p>

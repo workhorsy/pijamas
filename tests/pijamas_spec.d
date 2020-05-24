@@ -150,16 +150,87 @@ import pijamas;
 
   //  it("works for structs",
   {
-    struct Example
+    struct ExampleS
     {
       bool a = false;
       string f = "something";
     }
 
-    auto e = Example(true, "here");
-    e.should.be.equal(Example(true, "here"));
-    e.should.be.not.equal(Example(true, "asdf"));
-    assertThrown!Exception(e.should.be.equal(Example(true, "asdf")));
+    auto e = ExampleS(true, "here");
+    e.should.be.equal(ExampleS(true, "here"));
+    e.should.be.not.equal(ExampleS(true, "asdf"));
+    assertThrown!Exception(e.should.be.equal(ExampleS(true, "asdf")));
+  }
+
+  //  it("works for classes",
+  {
+    class ExampleC
+    {
+      int x;
+      this (int x)
+      {
+        this.x = x;
+      }
+
+      override bool opEquals(Object o) const// @trusted
+      {
+        if (ExampleC rhs = cast(ExampleC)o) {
+          return this.x == rhs.x;
+        }
+        return false;
+      }
+    }
+
+    auto e = new ExampleC(33);
+    e.should.be.equal(new ExampleC(33));
+    e.should.be.not.equal(new ExampleC(1));
+    assertThrown!Exception(e.should.be.equal(new ExampleC(1)));
+
+  }
+}
+
+@("Should Assertion.approxEqual")
+@safe unittest
+{
+  // it("asserts that the identical value are identical")
+  {
+    float f = 0.01;
+    f.should.be.approxEqual(f);
+    
+    double d = 0.01;
+    d.should.be.approxEqual(d);
+    
+    real r = 0.01;
+    r.should.be.approxEqual(r);
+  }
+  
+  // it("handles comparing diferent float types")
+  {
+    float f = 0.01;
+    double d = 0.01;
+    real r = 0.01;
+    f.should.be.approxEqual(d);
+    f.should.be.approxEqual(r);
+    
+    d.should.be.approxEqual(f);
+    d.should.be.approxEqual(r);
+    
+    r.should.be.approxEqual(f);
+    r.should.be.approxEqual(d);
+  }
+
+  // it("asserts that two nearly identical float values are approximated equal")
+  {
+    double d = 0.1;
+    double d2 = d + 1e-05;
+    d.should.not.be.equal(d2);
+    d.should.be.approxEqual(d2);
+
+    // and("when increase the difference, it must not be approximated equals")
+    d2 += 1e-2;
+    d.should.not.be.equal(d2);
+    d.should.not.be.approxEqual(d2);
+    assertThrown!Exception(d.should.be.approxEqual(d2));
   }
 }
 
