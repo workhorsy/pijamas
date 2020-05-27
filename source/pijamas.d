@@ -395,7 +395,7 @@ class Assertion(T)
      * should(&notThrowing).not.Throw;
      * ```
      */
-    void Throw(T : Throwable = Exception)(string file = __FILE__, size_t line = __LINE__) @safe
+    void Throw(T : Throwable = Exception)(string file = __FILE__, size_t line = __LINE__) @trusted
     {
       operator = "throw";
       bool thrown = false;
