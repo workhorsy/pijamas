@@ -87,12 +87,28 @@ Asserts if a value is bigger than another value. Returns the result.
 10.should.be.biggerThan(1);
 ```
 
+#### `bool biggerOrEqualThan(U)(U other, string file = __FILE__, size_t line = __LINE__);`
+
+Asserts if a value is bigger or euqal than another value. Returns the result.
+```d
+10.should.be.biggerOrEqualThan(1);
+10.should.be.biggerOrEqualThan(10);
+```
+
 #### `bool smallerThan(U)(U other, string file = __FILE__, size_t line = __LINE__)`
 
 Asserts if a value is smaller than another value. Returns the result.
 ```d
 10.should.be.smallerThan(100);
 false.should.be.smallerThan(true);
+```
+
+#### `bool smallerOrEqualThan(U)(U other, string file = __FILE__, size_t line = __LINE__)`
+
+Asserts if a value is smaller or equal than another value. Returns the result.
+```d
+10.should.be.smallerOrEqualThan(100);
+10.should.be.smallerOrEqualThan(10);
 ```
 
 #### `U include(U)(U other, string file = __FILE__, size_t line = __LINE__);`

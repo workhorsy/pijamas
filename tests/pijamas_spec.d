@@ -415,6 +415,9 @@ import pijamas;
     a2.should.be.biggerThan("aaa");
     a2.should.not.be.biggerThan("zz");
     assertThrown!Exception(a2.should.be.biggerThan("zz"));
+
+    10.should.be.biggerOrEqualThan(10);
+    50.should.be.biggerOrEqualThan(10);
   }
 }
 
@@ -431,5 +434,8 @@ import pijamas;
     a2.should.be.smallerThan(2000);
     a2.should.be.not.smallerThan(99);
     assertThrown!Exception(a2.should.be.smallerThan(99));
+
+    10.should.be.smallerOrEqualThan(10);
+    10.should.be.smallerOrEqualThan(50);
   }
 }

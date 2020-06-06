@@ -185,6 +185,22 @@ class Assertion(T)
   }
 
   /**
+   * Asserts if a value is bigger or equal than another value. Returns the result.
+   *
+   * Examples:
+   * ```
+   * "z".should.be.biggerOrEqualThan("a");
+   * 10.should.be.biggerOrEqualThan(10);
+   * 20.should.be.biggerOrEqualThan(10);
+   * ```
+   */
+  bool biggerOrEqualThan(U)(U other, string file = __FILE__, size_t line = __LINE__) @trusted
+  {
+    operator = "be bigger or equal than";
+    return this.ok(context >= other, this.message(other), file, line);
+  }
+
+  /**
    * Asserts if a value is smaller than another value. Returns the result.
    *
    * Examples:
@@ -197,6 +213,22 @@ class Assertion(T)
   {
     operator = "be smaller than";
     return this.ok(context < other, this.message(other), file, line);
+  }
+
+  /**
+   * Asserts if a value is smaller or euqal than another value. Returns the result.
+   *
+   * Examples:
+   * ```
+   * 10.should.be.smallerOrEqualThan(100);
+   * 10.should.be.smallerOrEqualThan(10);
+   * false.should.be.smallerOrEqualThan(true);
+   * ```
+   */
+  bool smallerOrEqualThan(U)(U other, string file = __FILE__, size_t line = __LINE__) @trusted
+  {
+    operator = "be smaller or equal than";
+    return this.ok(context <= other, this.message(other), file, line);
   }
 
   static if (isForwardRange!T && __traits(compiles, context.isSorted))
@@ -395,7 +427,7 @@ class Assertion(T)
      * should(&notThrowing).not.Throw;
      * ```
      */
-    void Throw(T : Throwable = Exception)(string file = __FILE__, size_t line = __LINE__) @safe
+    void Throw(T : Throwable = Exception)(string file = __FILE__, size_t line = __LINE__) @trusted
     {
       operator = "throw";
       bool thrown = false;
