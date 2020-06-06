@@ -62,6 +62,15 @@ assertion.
 255.should.equal(10); // Throws an Exception "expected 255 to equal 10"
 ```
 
+#### `T approxEqual(U)(U other, U maxRelDiff = 1e-2, U maxAbsDiff = 1e-05, string file = __FILE__, size_t line = __LINE__);`
+
+Asserts for aproximated equality of float types. Returns the value wrapped around the
+assertion.
+```d
+(1.0f).should.be.approxEqual(1.00000001);
+(1.0f).should.not.be.approxEqual(1.001);
+```
+
 #### `T exist(string file = __FILE__, size_t line = __LINE__);`
 
 Asserts whether a value exists - currently simply compares it with `null`, if it
@@ -82,12 +91,28 @@ Asserts if a value is bigger than another value. Returns the result.
 10.should.be.biggerThan(1);
 ```
 
+#### `bool biggerOrEqualThan(U)(U other, string file = __FILE__, size_t line = __LINE__);`
+
+Asserts if a value is bigger or euqal than another value. Returns the result.
+```d
+10.should.be.biggerOrEqualThan(1);
+10.should.be.biggerOrEqualThan(10);
+```
+
 #### `bool smallerThan(U)(U other, string file = __FILE__, size_t line = __LINE__)`
 
 Asserts if a value is smaller than another value. Returns the result.
 ```d
 10.should.be.smallerThan(100);
 false.should.be.smallerThan(true);
+```
+
+#### `bool smallerOrEqualThan(U)(U other, string file = __FILE__, size_t line = __LINE__)`
+
+Asserts if a value is smaller or equal than another value. Returns the result.
+```d
+10.should.be.smallerOrEqualThan(100);
+10.should.be.smallerOrEqualThan(10);
 ```
 
 #### `U include(U)(U other, string file = __FILE__, size_t line = __LINE__);`

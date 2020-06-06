@@ -903,6 +903,57 @@ aClass.should.not.exists;
 </li><li class="ddoc_member">
   <div class="ddoc_member_header">
   <div class="ddoc_header_anchor">
+  <a href="#Assertion.biggerOrEqualThan" id="Assertion.biggerOrEqualThan"><code class="code">biggerOrEqualThan</code></a>
+</div>
+</div><div class="ddoc_decl">
+  <section class="section">
+    <div class="declaration">
+      <h4>Declaration</h4>
+      <div class="dlang">
+        <p class="para">
+          <code class="code">
+            <span class="ddoc_anchor" id="Assertion.biggerOrEqualThan"></span>@trusted bool <code class="code">biggerOrEqualThan</code>(U)(U <code class="code">other</code>, string <code class="code">file</code> = __FILE__, size_t <code class="code">line</code> = __LINE__);
+
+          </code>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="ddoc_decl">
+  <section class="section ddoc_sections">
+  <div class="ddoc_summary">
+  <p class="para">
+    Asserts if a value is bigger or equal than another value. Returns the result.
+
+  </p>
+</div>
+<div class="ddoc_examples">
+  <h4>Examples</h4>
+  <p class="para">
+    
+<section class="code_listing">
+  <div class="code_sample">
+    <div class="dlang">
+      <ol class="code_lines">
+        <li><code class="code"><span class="string_literal">"z"</span>.should.be.<span class="psymbol">biggerOrEqualThan</span>(<span class="string_literal">"a"</span>);
+10.should.be.<span class="psymbol">biggerOrEqualThan</span>(10);
+20.should.be.<span class="psymbol">biggerOrEqualThan</span>(10);
+</code></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+  </p>
+</div>
+</section>
+
+</div>
+
+</li><li class="ddoc_member">
+  <div class="ddoc_member_header">
+  <div class="ddoc_header_anchor">
   <a href="#Assertion.smallerThan" id="Assertion.smallerThan"><code class="code">smallerThan</code></a>
 </div>
 </div><div class="ddoc_decl">
@@ -938,6 +989,57 @@ aClass.should.not.exists;
       <ol class="code_lines">
         <li><code class="code">10.should.be.<span class="psymbol">smallerThan</span>(100);
 <span class="keyword">false</span>.should.be.<span class="psymbol">smallerThan</span>(<span class="keyword">true</span>);
+</code></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+  </p>
+</div>
+</section>
+
+</div>
+
+</li><li class="ddoc_member">
+  <div class="ddoc_member_header">
+  <div class="ddoc_header_anchor">
+  <a href="#Assertion.smallerOrEqualThan" id="Assertion.smallerOrEqualThan"><code class="code">smallerOrEqualThan</code></a>
+</div>
+</div><div class="ddoc_decl">
+  <section class="section">
+    <div class="declaration">
+      <h4>Declaration</h4>
+      <div class="dlang">
+        <p class="para">
+          <code class="code">
+            <span class="ddoc_anchor" id="Assertion.smallerOrEqualThan"></span>@trusted bool <code class="code">smallerOrEqualThan</code>(U)(U <code class="code">other</code>, string <code class="code">file</code> = __FILE__, size_t <code class="code">line</code> = __LINE__);
+
+          </code>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="ddoc_decl">
+  <section class="section ddoc_sections">
+  <div class="ddoc_summary">
+  <p class="para">
+    Asserts if a value is smaller or euqal than another value. Returns the result.
+
+  </p>
+</div>
+<div class="ddoc_examples">
+  <h4>Examples</h4>
+  <p class="para">
+    
+<section class="code_listing">
+  <div class="code_sample">
+    <div class="dlang">
+      <ol class="code_lines">
+        <li><code class="code">10.should.be.<span class="psymbol">smallerOrEqualThan</span>(100);
+10.should.be.<span class="psymbol">smallerOrEqualThan</span>(10);
+<span class="keyword">false</span>.should.be.<span class="psymbol">smallerOrEqualThan</span>(<span class="keyword">true</span>);
 </code></li>
       </ol>
     </div>
@@ -1372,7 +1474,7 @@ aClass.should.not.exists;
       <div class="dlang">
         <p class="para">
           <code class="code">
-            <span class="ddoc_anchor" id="Assertion.Throw"></span>@safe void <code class="code">Throw</code>(T : Throwable = Exception)(string <code class="code">file</code> = __FILE__, size_t <code class="code">line</code> = __LINE__);
+            <span class="ddoc_anchor" id="Assertion.Throw"></span>@trusted void <code class="code">Throw</code>(T : Throwable = Exception)(string <code class="code">file</code> = __FILE__, size_t <code class="code">line</code> = __LINE__);
 
           </code>
         </p>

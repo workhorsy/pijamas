@@ -1,3 +1,8 @@
+# v0.3.3
+
+* .throw must be @trusted, to allow to catch Errors
+* Added .biggerOrEqualThan and .smallerOrEqualThan
+
 # v0.3.2
 
 * .equals and others, must be @trusted to allow to call @system opEquals
