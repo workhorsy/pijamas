@@ -39,6 +39,6 @@ jobs:
           # Build and run tests, as defined by `unittest` configuration
           # In this mode, `mainSourceFile` is excluded and `version (unittest)` are included
           # See https://dub.pm/package-format-json.html#configurations
-          dub build -b release --compiler=$DC
+          dub build -b release
           dub clean --all-packages -q
-          dub test --compiler=$DC
+          dub test
