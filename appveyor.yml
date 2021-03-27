@@ -8,7 +8,7 @@ environment:
           DVersion: stable
           arch: x86
         - DC: dmd
-          DVersion: 2.090.1
+          DVersion: 2.091.1
           arch: x86
         - DC: ldc
           DVersion: stable
