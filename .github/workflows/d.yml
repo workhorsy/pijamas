@@ -38,9 +38,13 @@ jobs:
 
       - name: 'Build & Test'
         run: |
-          # Build and run tests, as defined by `unittest` configuration
-          # In this mode, `mainSourceFile` is excluded and `version (unittest)` are included
-          # See https://dub.pm/package-format-json.html#configurations
-          dub build -b release
+          # Release build
+          dub build --parallel -b release
           dub clean --all-packages -q
-          dub test
+          # Run tests
+          dub test --parallel --coverage
+
+      - name: Upload Coverage to Codecov
+        # Upload test coverage even if lint step fails
+        if: success() || (steps.lint.outcome == 'failure' && steps.tests.outcome == 'success')
+        run: bash <(curl -s https://codecov.io/bash)
