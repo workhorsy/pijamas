@@ -4,8 +4,10 @@ title: About
 ---
 pijamas
 =======
-[![Build Status](https://travis-ci.org/Zardoz89/pijamas.svg?branch=master)](https://travis-ci.org/Zardoz89/pijamas)
+[![DUB](https://img.shields.io/dub/v/pijamas)](https://code.dlang.org/packages/pijamas)
+![Build status](https://img.shields.io/github/checks-status/Zardoz89/pijamas/master)
 [![Build status](https://ci.appveyor.com/api/projects/status/7rwhguv6wfvyrufs/branch/master?svg=true)](https://ci.appveyor.com/project/Zardoz89/pijamas/branch/master)
+[![codecov](https://codecov.io/gh/Zardoz89/pijamas/branch/master/graph/badge.svg?token=LWSVAL95DG)](https://codecov.io/gh/Zardoz89/pijamas)
 
 - - -
 
@@ -72,12 +74,12 @@ assertion. See Phobos std.math.isClose().
 ```
 #### `T close(U)(U other, U maxRelDiff = CommonDefaultFor!(T,U), U maxAbsDiff = 0.0, string file = __FILE__, size_t line = __LINE__);`
 
-Alias of approxEqual 
+Alias of approxEqual
 
 #### `T exist(string file = __FILE__, size_t line = __LINE__);`
 
 Asserts whether a value exists - currently simply compares it with `null`, if it
-is convertible to `null` (actually strings, pointers and classes). Returns the 
+is convertible to `null` (actually strings, pointers and classes). Returns the
 value wrapped around the assertion.
 ```d
 auto exists = "I exist!";
