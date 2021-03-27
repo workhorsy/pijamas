@@ -62,14 +62,17 @@ assertion.
 255.should.equal(10); // Throws an Exception "expected 255 to equal 10"
 ```
 
-#### `T approxEqual(U)(U other, U maxRelDiff = 1e-2, U maxAbsDiff = 1e-05, string file = __FILE__, size_t line = __LINE__);`
+#### `T approxEqual(U)(U other, U maxRelDiff = CommonDefaultFor!(T,U), U maxAbsDiff = 0.0, string file = __FILE__, size_t line = __LINE__);`
 
-Asserts for aproximated equality of float types. Returns the value wrapped around the
-assertion.
+Asserts for approximated equality of float types. Returns the value wrapped around the
+assertion. See Phobos std.math.isClose().
 ```d
 (1.0f).should.be.approxEqual(1.00000001);
-(1.0f).should.not.be.approxEqual(1.001);
+(1.0f).should.not.be.approxEqual(1.01);
 ```
+#### `T close(U)(U other, U maxRelDiff = CommonDefaultFor!(T,U), U maxAbsDiff = 0.0, string file = __FILE__, size_t line = __LINE__);`
+
+Alias of approxEqual 
 
 #### `T exist(string file = __FILE__, size_t line = __LINE__);`
 

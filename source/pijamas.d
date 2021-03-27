@@ -145,11 +145,13 @@ class Assertion(T)
    *   maxAbsDiff = Maximum absolute difference. This is mainly usefull
    *   for comparing values to zero. Setting to 0.0 disables this check.
    *   Defaults to `0.0`.
+   *   file = filename
+   *   line = line number inside of file
    *
    * Examples:
    * ```
    * double d = 0.1;
-   * double d2 = d + 1e-05;
+   * double d2 = d + 1e-10;
    * d.should.not.be.equal(d2);
    * d.should.be.approxEqual(d2);
    * ```
@@ -163,7 +165,18 @@ class Assertion(T)
     this.ok(isClose(context, other, maxRelDiff, maxAbsDiff), this.message(other), file, line);
     return context;
   }
-  ///ditto
+
+  /**
+   * Alias to approxEqual
+   *
+   * Examples:
+   * ```
+   * double d = 0.1;
+   * double d2 = d + 1e-10;
+   * d.should.not.be.close(d2);
+   * d.should.be.close(d2);
+   * ```
+   */
   alias close = approxEqual;
 
   /**
