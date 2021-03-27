@@ -103,8 +103,48 @@ class Assertion(T)
     return context;
   }
 
+  // Ripped from std.math
+  private template CommonDefaultFor(T,U)
+  {
+    import std.traits : CommonType;
+    import std.algorithm.comparison : min;
+
+    alias baseT = FloatingPointBaseType!T;
+    alias baseU = FloatingPointBaseType!U;
+
+    enum CommonType!(baseT, baseU) CommonDefaultFor = 10.0L ^^ -((min(baseT.dig, baseU.dig) + 1) / 2 + 1);
+  }
+
+  private template FloatingPointBaseType(T)
+  {
+    import std.traits : isFloatingPoint;
+    import std.range.primitives : ElementType;
+    static if (isFloatingPoint!T)
+    {
+      alias FloatingPointBaseType = Unqual!T;
+    }
+    else static if (isFloatingPoint!(ElementType!(Unqual!T)))
+    {
+      alias FloatingPointBaseType = Unqual!(ElementType!(Unqual!T));
+    }
+    else
+    {
+      alias FloatingPointBaseType = real;
+    }
+  }
+
   /**
    * Asserts that a float type is aproximated equal. Returns the valued wrapped around the assertion
+   *
+   * Params:
+   *   other = Value to compare to compare.
+   *   maxRelDiff = Maximum allowable relative difference.
+   *   Setting to 0.0 disables this check. Default depends on the type of
+   *   `other` and the original valie: It is approximately half the number of decimal digits of
+   *   precision of the smaller type.
+   *   maxAbsDiff = Maximum absolute difference. This is mainly usefull
+   *   for comparing values to zero. Setting to 0.0 disables this check.
+   *   Defaults to `0.0`.
    *
    * Examples:
    * ```
@@ -114,15 +154,17 @@ class Assertion(T)
    * d.should.be.approxEqual(d2);
    * ```
    */
-  T approxEqual(U = double)(U other, U maxRelDiff = 1e-2, U maxAbsDiff = 1e-05,
+  T approxEqual(U = double)(U other, U maxRelDiff = CommonDefaultFor!(T,U), U maxAbsDiff = 0.0,
       string file = __FILE__, size_t line = __LINE__) @trusted
       if (is(T : real) && __traits(isFloating, T) && is(U : real) && __traits(isFloating, U))
   {
-    import std.math : approxEqual;
+    import std.math : isClose;
     operator = "be approximated equal than";
-    this.ok(approxEqual(context, other, maxRelDiff, maxAbsDiff), this.message(other), file, line);
+    this.ok(isClose(context, other, maxRelDiff, maxAbsDiff), this.message(other), file, line);
     return context;
   }
+  ///ditto
+  alias close = approxEqual;
 
   /**
    * Asserts whether a value exists - currently simply compares it with null, if it is a pointer, a class or a string.
