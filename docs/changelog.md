@@ -2,6 +2,12 @@
 layout: default
 title: Changelog
 ---
+# v0.3.4
+
+* Update to DLang frontend 2.91
+* Using std.math.isClose instead of .approxEquals
+* Added .close as alias of .approxEquals
+
 # v0.3.3
 
 * .throw must be @trusted, to allow to catch Errors

@@ -196,14 +196,15 @@ import pijamas;
   {
     float f = 0.01;
     f.should.be.approxEqual(f);
-    
+    f.should.be.close(f);
+
     double d = 0.01;
     d.should.be.approxEqual(d);
-    
+
     real r = 0.01;
     r.should.be.approxEqual(r);
   }
-  
+
   // it("handles comparing diferent float types")
   {
     float f = 0.01;
@@ -211,26 +212,35 @@ import pijamas;
     real r = 0.01;
     f.should.be.approxEqual(d);
     f.should.be.approxEqual(r);
-    
+
     d.should.be.approxEqual(f);
     d.should.be.approxEqual(r);
-    
+
     r.should.be.approxEqual(f);
     r.should.be.approxEqual(d);
   }
 
   // it("asserts that two nearly identical float values are approximated equal")
   {
+    float one = 1_000_000_000.0;
+    one.should.be.close(999_999_999.0);
+
     double d = 0.1;
-    double d2 = d + 1e-05;
+    double d2 = d + 1e-10;
     d.should.not.be.equal(d2);
     d.should.be.approxEqual(d2);
 
     // and("when increase the difference, it must not be approximated equals")
-    d2 += 1e-2;
+    d2 += 1e-5;
     d.should.not.be.equal(d2);
     d.should.not.be.approxEqual(d2);
     assertThrown!Exception(d.should.be.approxEqual(d2));
+
+    // and("Different default limits for different floating point types")
+    float oneFloat = 1.0f;
+    double oneDouble = 1.0;
+    oneFloat.should.be.close(0.999_99f);
+    oneDouble.should.not.be.close(0.999_99);
   }
 }
 
