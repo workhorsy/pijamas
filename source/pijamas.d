@@ -30,15 +30,12 @@ class Assertion(T)
   private string operator = "be";
   private T context;
 
-  this() @safe pure nothrow
-  {
-  }
-
+  /// Creates a instance of Assertion, wrapping a value or object
   this(T _context) @safe pure nothrow
   {
     context = _context;
   }
-
+  ///ditto
   this(ref T _context) @safe pure nothrow
   {
     context = _context;
@@ -115,6 +112,7 @@ class Assertion(T)
     enum CommonType!(baseT, baseU) CommonDefaultFor = 10.0L ^^ -((min(baseT.dig, baseU.dig) + 1) / 2 + 1);
   }
 
+  // Ripped from std.math
   private template FloatingPointBaseType(T)
   {
     import std.traits : isFloatingPoint;

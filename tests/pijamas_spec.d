@@ -67,6 +67,9 @@ import pijamas;
     C c;
     c.should.not.exist;
     assertThrown!Exception(c.should.exist);
+
+    c = new C();
+    c.should.exist;
   }
 }
 
@@ -181,10 +184,22 @@ import pijamas;
       }
     }
 
+    class OtherClass
+    {
+      int x;
+      this (int x)
+      {
+        this.x = x;
+      }
+    }
+
     auto e = new ExampleC(33);
     e.should.be.equal(new ExampleC(33));
     e.should.be.not.equal(new ExampleC(1));
     assertThrown!Exception(e.should.be.equal(new ExampleC(1)));
+
+    e.should.be.not.equal(new OtherClass(33));
+    assertThrown!Exception(e.should.be.equal(new OtherClass(33)));
 
   }
 }
