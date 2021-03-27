@@ -3,6 +3,7 @@ pijamas
 [![DUB](https://img.shields.io/dub/v/pijamas)](https://code.dlang.org/packages/pijamas)
 ![Build status](https://img.shields.io/github/checks-status/Zardoz89/pijamas/master)
 [![Build status](https://ci.appveyor.com/api/projects/status/7rwhguv6wfvyrufs/branch/master?svg=true)](https://ci.appveyor.com/project/Zardoz89/pijamas/branch/master)
+[![codecov](https://codecov.io/gh/Zardoz89/pijamas/branch/master/graph/badge.svg?token=LWSVAL95DG)](https://codecov.io/gh/Zardoz89/pijamas)
 
 - - -
 
