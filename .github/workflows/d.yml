@@ -45,6 +45,6 @@ jobs:
           dub test --parallel --coverage
 
       - name: Upload Coverage to Codecov
-        # Upload test coverage even if lint step fails
-        if: success() || (steps.lint.outcome == 'failure' && steps.tests.outcome == 'success')
+        # Upload test coverage
+        if: runner.os == 'Linux'
         run: bash <(curl -s https://codecov.io/bash)
