@@ -1,0 +1,10 @@
+{
+  "reporters": [
+    "spec",
+    "result"
+    ],
+    "testDiscovery": [
+      "trial.discovery.unit.UnitTestDiscovery"
+    ],
+    "maxThreads": 0
+}

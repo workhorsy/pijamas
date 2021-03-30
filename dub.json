@@ -13,12 +13,11 @@
       "targetType": "library"
     },
     {
-      "name": "unittest",
-      "targetType": "library",
+      "name": "trial",
       "importPaths": ["source", "tests"],
       "sourcePaths": ["source", "tests"],
       "dependencies": {
-        "silly": {"version": "~>1.0", "optional": true, "default": true}
+        "trial:lifecycle": "~>0.7.5"
       }
     }
   ],
