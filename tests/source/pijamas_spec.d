@@ -7,9 +7,28 @@
 module pijamas_spec;
 
 import std.exception;
-import core.exception : AssertError;
 
 import pijamas;
+
+version(Debug_Failing_Tests) {
+  @("Failing test")
+  unittest
+  {
+    10.should.be.equal(0);
+  }
+
+  @("Failing test with native assert")
+  unittest
+  {
+    assert(10 == 0);
+  }
+
+  @("Error test")
+  unittest
+  {
+    throw new Exception("Some exception");
+  }
+}
 
 @("Should Assertion.exist")
 @trusted unittest
@@ -19,8 +38,8 @@ import pijamas;
     // String
     string str;
     str.should.not.exist;
-    assertNotThrown!AssertError(str.should.not.exist);
-    assertThrown!AssertError(str.should.exist);
+    assertNotThrown!AssertException(str.should.not.exist);
+    assertThrown!AssertException(str.should.exist);
 
     string str2 = null;
     str2.should.not.exist;
@@ -38,8 +57,8 @@ import pijamas;
     }
 
     S s;
-    assertNotThrown!AssertError(s.should.exist);
-    assertNotThrown!AssertError(s.should.not.exist);
+    assertNotThrown!AssertException(s.should.exist);
+    assertNotThrown!AssertException(s.should.not.exist);
   }
 
   //  it("Pointer not being a null pointer"
@@ -47,7 +66,7 @@ import pijamas;
     // Ptr
     int* ptr = null;
     ptr.should.not.exist;
-    assertThrown!AssertError(ptr.should.exist);
+    assertThrown!AssertException(ptr.should.exist);
 
     int value;
     ptr = &value;
@@ -67,7 +86,7 @@ import pijamas;
 
     C c;
     c.should.not.exist;
-    assertThrown!AssertError(c.should.exist);
+    assertThrown!AssertException(c.should.exist);
 
     c = new C();
     c.should.exist;
@@ -101,7 +120,7 @@ import pijamas;
   // it("throws for false",
   {
     (1 != 1).should.not.be.True;
-    assertThrown!AssertError(false.should.be.True);
+    assertThrown!AssertException(false.should.be.True);
   }
 }
 
@@ -117,7 +136,7 @@ import pijamas;
   // it("throws for true",
   {
     true.should.not.be.False;
-    assertThrown!AssertError((1 == 1).should.be.False);
+    assertThrown!AssertException((1 == 1).should.be.False);
   }
 }
 
@@ -129,7 +148,7 @@ import pijamas;
     10.should.be.equal(10);
     10.should.not.be.equal(5);
     10.should.not;
-    assertThrown!AssertError(10.should.be.equal(2));
+    assertThrown!AssertException(10.should.be.equal(2));
   }
 
   //  it("works for arrays",
@@ -138,7 +157,7 @@ import pijamas;
 
     byte[] a2 = [0, 2, 1];
     a2.should.not.be.equal([1, 2, 3, 5]);
-    assertThrown!AssertError(a2.should.be.equal([100, 200, 4]));
+    assertThrown!AssertException(a2.should.be.equal([100, 200, 4]));
   }
 
   //  it("works for ranges",
@@ -163,7 +182,7 @@ import pijamas;
     auto e = ExampleS(true, "here");
     e.should.be.equal(ExampleS(true, "here"));
     e.should.be.not.equal(ExampleS(true, "asdf"));
-    assertThrown!AssertError(e.should.be.equal(ExampleS(true, "asdf")));
+    assertThrown!AssertException(e.should.be.equal(ExampleS(true, "asdf")));
   }
 
   //  it("works for classes",
@@ -197,10 +216,10 @@ import pijamas;
     auto e = new ExampleC(33);
     e.should.be.equal(new ExampleC(33));
     e.should.be.not.equal(new ExampleC(1));
-    assertThrown!AssertError(e.should.be.equal(new ExampleC(1)));
+    assertThrown!AssertException(e.should.be.equal(new ExampleC(1)));
 
     e.should.be.not.equal(new OtherClass(33));
-    assertThrown!AssertError(e.should.be.equal(new OtherClass(33)));
+    assertThrown!AssertException(e.should.be.equal(new OtherClass(33)));
 
   }
 }
@@ -250,7 +269,7 @@ import pijamas;
     d2 += 1e-5;
     d.should.not.be.equal(d2);
     d.should.not.be.approxEqual(d2);
-    assertThrown!AssertError(d.should.be.approxEqual(d2));
+    assertThrown!AssertException(d.should.be.approxEqual(d2));
 
     // and("Different default limits for different floating point types")
     float oneFloat = 1.0f;
@@ -269,7 +288,7 @@ import pijamas;
 
     string str = "Something weird";
     str.should.match(regex(`[a-z]+`));
-    assertThrown!AssertError(str.should.match(regex(`[0-9]+`)));
+    assertThrown!AssertException(str.should.match(regex(`[0-9]+`)));
   }
 
   // it("returns whether a string type matches a StaticRegex",
@@ -278,7 +297,7 @@ import pijamas;
 
     string str = "something 2 weird";
     str.should.match(ctRegex!`[a-z0-9]+`);
-    assertThrown!AssertError(str.should.match(ctRegex!`^[a-z]+$`));
+    assertThrown!AssertException(str.should.match(ctRegex!`^[a-z]+$`));
   }
 
   // it("returns whether a string type matches a string regex",
@@ -286,7 +305,7 @@ import pijamas;
     string str = "1234numbers";
     str.should.match(`[0-9]+[a-z]+`);
     str.should.not.match(`^[a-z]+`);
-    assertThrown!AssertError(str.should.match(`^[a-z]+`));
+    assertThrown!AssertException(str.should.match(`^[a-z]+`));
   }
 }
 
@@ -298,7 +317,7 @@ import pijamas;
     int[] a = [1, 2, 3, 4, 5, 6];
     a.should.include(4);
     a.should.not.include(7);
-    assertThrown!AssertError(a.should.include(7));
+    assertThrown!AssertException(a.should.include(7));
   }
 
   // it("asserts for associative arrays containing values",
@@ -306,7 +325,7 @@ import pijamas;
     int[string] aa = ["something" : 2, "else" : 3];
     aa.should.have.value(2);
     aa.should.not.have.value(4);
-    assertThrown!AssertError(aa.should.have.value(42));
+    assertThrown!AssertException(aa.should.have.value(42));
   }
 
   // it("asserts for strings containing characters",
@@ -316,7 +335,7 @@ import pijamas;
     str.should.include("sd");
     str.should.not.include(2);
     str.should.not.include('u');
-    assertThrown!AssertError(str.should.include('z'));
+    assertThrown!AssertException(str.should.include('z'));
   }
 }
 
@@ -327,14 +346,14 @@ import pijamas;
   {
     auto str = "1234567";
     str.should.have.length(7);
-    assertThrown!AssertError(str.should.have.length(17));
+    assertThrown!AssertException(str.should.have.length(17));
   }
 
   // it("asserts for length equality for arrays",
   {
     auto a = [1, 2, 3, 4, 5, 6];
     a.should.have.length(6);
-    assertThrown!AssertError(a.should.have.length(16));
+    assertThrown!AssertException(a.should.have.length(16));
   }
 
   // it("asserts for length equality for associative arrays",
@@ -343,7 +362,7 @@ import pijamas;
       "something" : "here", "what" : "is", "this" : "stuff", "we're" : "doing"
     ];
     aa.should.have.length(4);
-    assertThrown!AssertError(aa.should.have.length(24));
+    assertThrown!AssertException(aa.should.have.length(24));
   }
 }
 
@@ -354,7 +373,7 @@ import pijamas;
   {
     auto str = "1234567";
     str.should.not.be.empty;
-    assertThrown!AssertError(str.should.be.empty);
+    assertThrown!AssertException(str.should.be.empty);
     "".should.be.empty;
   }
 
@@ -362,7 +381,7 @@ import pijamas;
   {
     auto a = [1, 2, 3, 4, 5, 6];
     a.should.not.be.empty;
-    assertThrown!AssertError(a.should.be.empty);
+    assertThrown!AssertException(a.should.be.empty);
     int[] emptyArr;
     emptyArr.should.be.empty;
   }
@@ -373,7 +392,7 @@ import pijamas;
       "something" : "here", "what" : "is", "this" : "stuff", "we're" : "doing"
     ];
     aa.should.not.be.empty;
-    assertThrown!AssertError(aa.should.be.empty);
+    assertThrown!AssertException(aa.should.be.empty);
     int[string] emptyAa;
     emptyAa.should.be.empty;
   }
@@ -410,7 +429,7 @@ import pijamas;
 
     aArr.should.have.key("something");
     aArr.should.not.have.key("else");
-    assertThrown!AssertError(aArr.should.have.key("another"));
+    assertThrown!AssertException(aArr.should.have.key("another"));
   }
 }
 
@@ -421,10 +440,10 @@ import pijamas;
   {
     auto unsorted = [4, 3, 2, 1];
     unsorted.should.not.be.sorted;
-    assertThrown!AssertError(unsorted.should.be.sorted);
+    assertThrown!AssertException(unsorted.should.be.sorted);
     auto sortedAr = [1, 2, 3, 4, 8];
     sortedAr.should.be.sorted;
-    assertThrown!AssertError(sortedAr.should.not.be.sorted);
+    assertThrown!AssertException(sortedAr.should.not.be.sorted);
   }
 }
 
@@ -440,7 +459,7 @@ import pijamas;
     auto a2 = "aab";
     a2.should.be.biggerThan("aaa");
     a2.should.not.be.biggerThan("zz");
-    assertThrown!AssertError(a2.should.be.biggerThan("zz"));
+    assertThrown!AssertException(a2.should.be.biggerThan("zz"));
 
     10.should.be.biggerOrEqualThan(10);
     50.should.be.biggerOrEqualThan(10);
@@ -459,7 +478,7 @@ import pijamas;
     auto a2 = 1000;
     a2.should.be.smallerThan(2000);
     a2.should.be.not.smallerThan(99);
-    assertThrown!AssertError(a2.should.be.smallerThan(99));
+    assertThrown!AssertException(a2.should.be.smallerThan(99));
 
     10.should.be.smallerOrEqualThan(10);
     10.should.be.smallerOrEqualThan(50);

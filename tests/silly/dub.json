@@ -11,5 +11,14 @@
       "version": "*",
       "path": "../../"
     }
-  }
+  },
+  "configurations": [
+    {
+      "name": "silly-tests"
+    },
+    {
+      "name": "fail-tests",
+      "versions": ["Debug_Failing_Tests"]
+    }
+  ]
 }

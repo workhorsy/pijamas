@@ -13,7 +13,18 @@ import std.regex : Regex, StaticRegex;
 import std.traits : hasMember, isSomeString, isCallable, isAssociativeArray,
   isImplicitlyConvertible, Unqual;
 
-import core.exception : AssertError;
+//version(Have_unit_threaded)
+static if (__traits(compiles, { import unit_threaded.should : UnitTestException; }))
+{
+  import unit_threaded.should : UnitTestException;
+
+  public alias AssertException = UnitTestException;
+} else {
+  import core.exception : AssertError;
+
+  public alias AssertException = AssertError;
+}
+
 /**
  * Pijamas exports a single function should meant for public use. Because of D’s lookup shortcut syntax, one is able
  * to use both should(obj) and obj.should to get an object wrapped around an Assertion instance
@@ -83,7 +94,7 @@ class Assertion(T)
     if (negated ? !expr : expr) {
       return expr;
     }
-    throw new AssertError(message, file, line);
+    throw new AssertException(message, file, line);
   }
 
   /**
