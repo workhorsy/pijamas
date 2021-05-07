@@ -43,8 +43,7 @@ jobs:
           dub clean --all-packages -q
           # Run tests
           dub test :silly-tests --parallel --coverage
-          cd unit-threaded
-          dub test --parallel --coverage
+          dub test --root=tests/unit-threaded --parallel --coverage
 
       - name: Upload Coverage to Codecov
         # Upload test coverage
