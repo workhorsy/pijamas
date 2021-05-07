@@ -8,21 +8,6 @@
     "Luis Panadero Guardeño"
   ],
   "targetType": "library",
-  "subPackages" : [
-    {
-      "name": "silly-tests",
-      "targetType": "library",
-      "importPaths": ["tests"],
-      "sourcePaths": ["tests"],
-      "dependencies": {
-        "silly": "~>1.1",
-        "pijamas":  {
-          "version": "*",
-          "path": "."
-        }
-      }
-    }
-  ],
   "buildTypes": {
     "docs": {
       "buildOptions": [

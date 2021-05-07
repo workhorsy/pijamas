@@ -1,14 +1,14 @@
 {
   "name": "unit-threaded-tests",
-  "description": "A BDD assertion library for D",
+  "description": "Tests of Pijamas, using unit-threaded",
   "license": "MIT",
   "targetType": "executable",
   "configurations": [
     {
       "name": "unittest",
       "targetType": "executable",
-      "importPaths": ["..", "."],
-      "sourcePaths": ["..", "."],
+      "importPaths": ["../source", "."],
+      "sourcePaths": ["../source", "."],
       "preBuildCommands": ["$DUB run unit-threaded -c gen_ut_main -- -f ut.d -d $DUB"],
       "mainSourceFile": "ut.d",
       "dependencies": {

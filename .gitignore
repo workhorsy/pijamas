@@ -43,6 +43,7 @@ build/*
 .directory
 tests/unit-threaded/ut.d
 tests/unit-threaded/unit-threaded-tests*
+tests/silly/silly-tests*
 
 .vscode/
 .idea/

@@ -42,7 +42,7 @@ jobs:
           dub build --parallel -b release
           dub clean --all-packages -q
           # Run tests
-          dub test :silly-tests --parallel --coverage
+          dub test --root=tests/silly --parallel --coverage
           dub test --root=tests/unit-threaded --parallel --coverage
 
       - name: Upload Coverage to Codecov
