@@ -1,3 +1,8 @@
+# v0.4.0
+
+* Moved unit-tests to a subpackage to avoid pollute other projects with
+    Pijamas unit-testing dependencies.
+
 # v0.3.5
 
 * Switching to GitHub CI
