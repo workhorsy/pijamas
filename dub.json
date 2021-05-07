@@ -10,6 +10,10 @@
   "targetType": "library",
   "configurations": [
     {
+      "name": "pijamas",
+      "targetType": "library"
+    },
+    {
       "name": "unittest",
       "targetType": "library",
       "importPaths": ["source", "tests/source"],

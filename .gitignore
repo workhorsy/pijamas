@@ -44,6 +44,9 @@ build/*
 tests/unit-threaded/ut.d
 tests/unit-threaded/unit-threaded-tests*
 tests/silly/silly-tests*
+.trial/
+trial-root*
+trial_root*
 
 .vscode/
 .idea/
