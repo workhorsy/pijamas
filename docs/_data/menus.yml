@@ -5,6 +5,6 @@ menu:
   - url: changelog.html
     name: changelog.md
     title: Changelog
-  - url: pyjamas.html
-    name: pyjamas.html
+  - url: pijamas.html
+    name: pijamas.html
     title: Documentation
