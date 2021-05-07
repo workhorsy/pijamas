@@ -21,8 +21,7 @@
           "path": "."
         }
       }
-    },
-    "./unit-threaded/"
+    }
   ],
   "buildTypes": {
     "docs": {
