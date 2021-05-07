@@ -41,6 +41,7 @@ dub.selections.json
 .lock-*
 build/*
 .directory
+unit-threaded/ut.d
 
 .vscode/
 .idea/

@@ -10,20 +10,19 @@
   "targetType": "library",
   "subPackages" : [
     {
-      "name": "silly-unittest",
+      "name": "silly-tests",
       "targetType": "library",
-      "importPaths": ["source", "tests"],
-      "sourcePaths": ["source", "tests"],
+      "importPaths": ["tests"],
+      "sourcePaths": ["tests"],
       "dependencies": {
-        "silly": {
-          "version": "~>1.1", "optional": true, "default": true
-        },
+        "silly": "~>1.1",
         "pijamas":  {
           "version": "*",
           "path": "."
         }
       }
-    }
+    },
+    "./unit-threaded/"
   ],
   "buildTypes": {
     "docs": {

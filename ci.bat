@@ -9,6 +9,5 @@ dub build -b release --compiler=%DC%
 dub clean --all-packages -q
 
 echo "Running tests"
-dub test :silly-unittest --compiler=%DC% -v
-
+dub test :silly-tests --compiler=%DC% -v
 

@@ -2,6 +2,7 @@
 
 * Moved unit-tests to a subpackage to avoid pollute other projects with
     Pijamas unit-testing dependencies.
+* Added extra tests using unit-threaded
 
 # v0.3.5
 
