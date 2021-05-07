@@ -226,7 +226,7 @@ BTW, I'll be glad to accept help in writting the documentation.
 Run tests with:
 
 ```
-dub test
+dub test :silly-unittest 
 ```
 
 ## Why 'Pijamas'
