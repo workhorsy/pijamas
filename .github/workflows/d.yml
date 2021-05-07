@@ -44,6 +44,7 @@ jobs:
           # Run tests
           dub test --root=tests/silly --parallel --coverage
           dub test --root=tests/unit-threaded --parallel --coverage
+          dub run trial:runner@~master
 
       - name: Upload Coverage to Codecov
         # Upload test coverage

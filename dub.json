@@ -8,6 +8,14 @@
     "Luis Panadero Guardeño"
   ],
   "targetType": "library",
+  "configurations": [
+    {
+      "name": "unittest",
+      "targetType": "library",
+      "importPaths": ["source", "tests/source"],
+      "sourcePaths": ["source", "tests/source"]
+    }
+  ],
   "buildTypes": {
     "docs": {
       "buildOptions": [
