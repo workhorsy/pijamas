@@ -207,6 +207,13 @@ void notThrowing()
 should(&notThrowing).not.Throw;
 ```
 
+## An example of failing an assertion
+
+<img src="https://zardoz89.github.io/pijamas/assets/img/error.png" />
+
+A failing assertation throws an Exception with information of what was
+expected, and file and line number where it failed
+
 ## Need more documentation?
 
 I know the documentation is still somewhat lacking, but it's better than

@@ -2,6 +2,12 @@
 layout: default
 title: Changelog
 ---
+# v0.3.5
+
+* Switching to GitHub CI
+* Update tests to use Silly 1.1
+* Tweaks on tests dependencies (optional: true)
+
 # v0.3.4
 
 * Update to DLang frontend 2.91
