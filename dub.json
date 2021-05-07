@@ -14,7 +14,7 @@
       "targetType": "library"
     },
     {
-      "name": "unittest",
+      "name": "trial",
       "targetType": "library",
       "importPaths": ["source", "tests/source"],
       "sourcePaths": ["source", "tests/source"]
