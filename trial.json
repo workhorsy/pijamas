@@ -3,7 +3,8 @@
 	"maxThreads": 0,
 	"reporters": [
 		"spec",
-		"result"
+		"result",
+		"xunit"
 	],
 	"artifactsLocation": ".trial",
 	"testDiscovery": [

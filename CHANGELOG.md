@@ -1,8 +1,11 @@
 # v0.4.0
 
-* Moved unit-tests to a subpackage to avoid pollute other projects with
+* Moved unit-tests to an separate foolder to avoid pollute other projects with
     Pijamas unit-testing dependencies.
-* Added extra tests using unit-threaded
+* Launch tests using silly, unit-threaded and trial
+* Assertions now throws AssertException that it's an alias to AssertError or to
+    unit-threaded UnitTestException;
+
 
 # v0.3.5
 
