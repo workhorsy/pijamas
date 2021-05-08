@@ -24,7 +24,8 @@ import pyjamas;
 ## Introduction
 
 Pyjamas, and by extension Pijamas, is an assertion library heavily inspired by [visionmedia'ś
-should.js](https://github.com/visionmedia/should.js) module for Node.JS.
+should.js](https://github.com/visionmedia/should.js) module for Node.JS. It
+aspires to be totally independent of the unit test runner.
 
 ## General Assertions
 
@@ -207,8 +208,9 @@ should(&notThrowing).not.Throw;
 
 <img src="https://zardoz89.github.io/pijamas/assets/img/error.png" />
 
-A failing assertation throws an Exception with information of what was
-expected, and file and line number where it failed
+A failing assertation throws an AssertException with information of what was
+expected, and file and line number where it failed. An AssertException it's an
+alias to AsertError or to UnitTestException if Unit-thereaded it's present.
 
 ## Need more documentation?
 

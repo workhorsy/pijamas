@@ -1,4 +1,4 @@
-# v0.4.0
+# v1.0.0
 
 * Moved unit-tests to an separate foolder to avoid pollute other projects with
     Pijamas unit-testing dependencies.
