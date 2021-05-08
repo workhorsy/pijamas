@@ -3,14 +3,10 @@
   "description": "Tests of Pijamas, using silly",
   "license": "MIT",
   "targetType": "library",
-  "importPaths": ["../source"],
-  "sourcePaths": ["../source"],
+  "importPaths": ["../source", "../../source"],
+  "sourcePaths": ["../source", "../../source"],
   "dependencies": {
-    "silly": "~>1.1",
-    "pijamas":  {
-      "version": "*",
-      "path": "../../"
-    }
+    "silly": "~>1.1"
   },
   "configurations": [
     {
