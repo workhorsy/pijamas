@@ -45,6 +45,7 @@ tests/unit-threaded/ut.d
 tests/unit-threaded/unit-threaded-tests*
 tests/silly/silly-tests*
 tests/dunit/dunit-tests*
+tests/d-unit/d-unit-tests
 .trial/
 trial-root*
 trial_root*
