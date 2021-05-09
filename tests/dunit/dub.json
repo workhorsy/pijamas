@@ -1,0 +1,20 @@
+{
+  "name": "dunit-tests",
+  "description": "Tests of Pijamas, using dunit",
+  "license": "MIT",
+  "targetType": "library",
+  "importPaths": ["../source", "../../source"],
+  "sourcePaths": ["../source", "../../source"],
+  "dependencies": {
+    "dunit": "~>1.0"
+  },
+  "configurations": [
+    {
+      "name": "dunit-tests"
+    },
+    {
+      "name": "fail-tests",
+      "versions": ["Debug_Failing_Tests"]
+    }
+  ]
+}
