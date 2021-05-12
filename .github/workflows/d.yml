@@ -44,6 +44,7 @@ jobs:
           # Run tests
           dub test --root=tests/silly --parallel --coverage
           dub test --root=tests/unit-threaded --parallel --coverage
+          dub test --root=tests/d-unit --parallel
       - name: 'Launch tests with Trial'
         if: runner.os == 'Linux'
         run:

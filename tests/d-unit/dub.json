@@ -2,19 +2,17 @@
   "name": "d-unit-tests",
   "description": "Tests of Pijamas, using d-unit",
   "license": "MIT",
-  "targetType": "executable",
   "importPaths": [".", "../source", "../../source"],
   "sourcePaths": [".", "../source", "../../source"],
-  "mainSourceFile": "ut.d",
+  "targetType": "library",
   "dependencies": {
     "d-unit": "~>0.10"
   },
   "configurations": [
     {
-      "name": "dunit-tests"
-    },
-    {
-      "name": "fail-tests",
+      "name": "unittest",
+      "mainSourceFile": "apptest.d",
+      "targetType": "executable",
       "versions": ["Debug_Failing_Tests"]
     }
   ]

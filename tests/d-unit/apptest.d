@@ -5,6 +5,11 @@ import std.exception;
 import dunit;
 import pijamas : should, PiException = AssertException;
 
+int main (string[] args)
+{
+  return dunit_main(args);
+}
+/*
 class Test
 {
     mixin UnitTest;
@@ -51,6 +56,4 @@ version(Debug_Failing_Tests) {
       }
   }
 }
-
-// either use the 'Main' mixin or call 'dunit_main(args)'
-mixin Main;
+*/
