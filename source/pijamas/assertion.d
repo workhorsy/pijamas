@@ -78,12 +78,21 @@ struct Assertion(T)
   }
 
   // Helper that evaluates the asserted expression
-  private U ok(U)(U expr, lazy string message, string file = __FILE__, size_t line = __LINE__) @safe pure
+  private U ok(U, V)(lazy U expr, V value, string file = __FILE__, size_t line = __LINE__) @safe
   {
     if (negated ? !expr : expr) {
       return expr;
     }
-    throw new AssertException(message, file, line);
+    throw new AssertException(this.message(value), file, line);
+  }
+
+  // Helper that evaluates the asserted expression
+  private U ok(U)(lazy U expr, string file = __FILE__, size_t line = __LINE__) @safe
+  {
+    if (negated ? !expr : expr) {
+      return expr;
+    }
+    throw new AssertException(this.message(), file, line);
   }
 
   // Generates string message when an assertation fails
@@ -112,7 +121,7 @@ struct Assertion(T)
    */
   T equal(U)(U other, string file = __FILE__, size_t line = __LINE__) @trusted
   {
-    this.ok(context == other, this.message(other), file, line);
+    this.ok(context == other, other, file, line);
     return context;
   }
 
@@ -176,7 +185,7 @@ struct Assertion(T)
   {
     import std.math : isClose;
     operator = "be approximated equal than";
-    this.ok(isClose(context, other, maxRelDiff, maxAbsDiff), this.message(other), file, line);
+    this.ok(isClose(context, other, maxRelDiff, maxAbsDiff), other, file, line);
     return context;
   }
 
@@ -217,7 +226,7 @@ struct Assertion(T)
       }))
     {
       if (context is null) {
-        this.ok(false, this.message, file, line);
+        this.ok(false, file, line);
       }
     }
     return context;
@@ -235,7 +244,7 @@ struct Assertion(T)
   bool biggerThan(U)(U other, string file = __FILE__, size_t line = __LINE__) @trusted
   {
     operator = "be bigger than";
-    return this.ok(context > other, this.message(other), file, line);
+    return this.ok(context > other, other, file, line);
   }
 
   /**
@@ -251,7 +260,7 @@ struct Assertion(T)
   bool biggerOrEqualThan(U)(U other, string file = __FILE__, size_t line = __LINE__) @trusted
   {
     operator = "be bigger or equal than";
-    return this.ok(context >= other, this.message(other), file, line);
+    return this.ok(context >= other, other, file, line);
   }
 
   /**
@@ -266,7 +275,7 @@ struct Assertion(T)
   bool smallerThan(U)(U other, string file = __FILE__, size_t line = __LINE__) @trusted
   {
     operator = "be smaller than";
-    return this.ok(context < other, this.message(other), file, line);
+    return this.ok(context < other, other, file, line);
   }
 
   /**
@@ -282,7 +291,7 @@ struct Assertion(T)
   bool smallerOrEqualThan(U)(U other, string file = __FILE__, size_t line = __LINE__) @trusted
   {
     operator = "be smaller or equal than";
-    return this.ok(context <= other, this.message(other), file, line);
+    return this.ok(context <= other, other, file, line);
   }
 
   static if (isForwardRange!T && __traits(compiles, context.isSorted))
@@ -299,7 +308,7 @@ struct Assertion(T)
     bool sorted(string file = __FILE__, size_t line = __LINE__) @trusted
     {
       operator = "be sorted";
-      return this.ok(context.isSorted, this.message, file, line);
+      return this.ok(context.isSorted, file, line);
     }
   }
 
@@ -316,7 +325,7 @@ struct Assertion(T)
     void key(U)(U other, string file = __FILE__, size_t line = __LINE__) @trusted
     {
       operator = "have key";
-      this.ok(!(other !in context), this.message(other), file, line);
+      this.ok(!(other !in context), other, file, line);
     }
   }
 
@@ -341,7 +350,7 @@ struct Assertion(T)
       }
 
       operator = "contain value";
-      this.ok(canFind(pool, other), this.message(other), file, line);
+      this.ok(canFind(pool, other), other, file, line);
       return other;
     }
 
@@ -366,7 +375,7 @@ struct Assertion(T)
     U length(U)(U len, string file = __FILE__, size_t line = __LINE__) @trusted
     {
       operator = "have length of";
-      this.ok(context.length == len, this.message(len), file, line);
+      this.ok(context.length == len, len, file, line);
       return len;
     }
 
@@ -382,7 +391,7 @@ struct Assertion(T)
     bool empty(string file = __FILE__, size_t line = __LINE__) @trusted
     {
       operator = "is empty";
-      return this.ok(context.length == 0, this.message(), file, line);
+      return this.ok(context.length == 0, file, line);
     }
   }
 
@@ -411,7 +420,7 @@ struct Assertion(T)
 
       auto m = match(context, re);
       operator = "match";
-      this.ok(!m.empty, this.message(re), file, line);
+      this.ok(!m.empty, re, file, line);
       return m;
     }
 
@@ -423,7 +432,7 @@ struct Assertion(T)
 
       auto m = match(context, regex(re));
       operator = "match";
-      this.ok(!m.empty, this.message(re), file, line);
+      this.ok(!m.empty, re, file, line);
       return m;
     }
   }
@@ -441,7 +450,7 @@ struct Assertion(T)
      */
     bool True(string file = __FILE__, size_t line = __LINE__) @safe
     {
-      return this.ok(context == true, this.message(true), file, line);
+      return this.ok(context == true, true, file, line);
     }
 
     /**
@@ -455,7 +464,7 @@ struct Assertion(T)
      */
     bool False(string file = __FILE__, size_t line = __LINE__) @safe
     {
-      return !this.ok(context == false, this.message(false), file, line);
+      return !this.ok(context == false, false, file, line);
     }
   }
 
@@ -490,7 +499,7 @@ struct Assertion(T)
       } catch (T) {
         thrown = true;
       }
-      this.ok(thrown, this.message(), file, line);
+      this.ok(thrown, file, line);
     }
   }
 
