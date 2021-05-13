@@ -1,10 +1,9 @@
 /**
  * Pijamas, a BDD assertion library for D.
  *
- * Authors: Pedro Tacla Yamada, Luis Panadero Guardeño
  * License: Licensed under the MIT license. See LICENSE for more information.
  */
-module pijamas;
+module pijamas.assertion;
 
 import std.algorithm : canFind, isSorted;
 import std.conv : to;
@@ -13,17 +12,7 @@ import std.regex : Regex, StaticRegex;
 import std.traits : hasMember, isSomeString, isCallable, isAssociativeArray,
   isImplicitlyConvertible, Unqual;
 
-//version(Have_unit_threaded)
-static if (__traits(compiles, { import unit_threaded.should : UnitTestException; }))
-{
-  import unit_threaded.should : UnitTestException;
-
-  public alias AssertException = UnitTestException;
-} else {
-  import core.exception : AssertError;
-
-  public alias AssertException = AssertError;
-}
+import pijamas.exception;
 
 /**
  * Pijamas exports a single function should meant for public use. Because of D’s lookup shortcut syntax, one is able

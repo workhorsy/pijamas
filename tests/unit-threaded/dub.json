@@ -7,8 +7,8 @@
     {
       "name": "unittest",
       "targetType": "executable",
-      "importPaths": [".", "../source", "../../source"],
-      "sourcePaths": [".", "../source", "../../source"],
+      "importPaths": [".", "../source", "../../source/"],
+      "sourcePaths": [".", "../source", "../../source/"],
       "preBuildCommands": ["$DUB run unit-threaded -c gen_ut_main -- -f ut.d -d $DUB"],
       "mainSourceFile": "ut.d",
       "dependencies": {
