@@ -10,16 +10,36 @@ static if (__traits(compiles, { import unit_threaded.should : UnitTestException;
 {
   import unit_threaded.should : UnitTestException;
 
-  public alias AssertException = UnitTestException;
+  alias BaseException = UnitTestException;
+
+} else static if (__traits(compiles, { import dunit.error : DUnitAssertError; }))
+{
+  import dunit.error : DUnitAssertError;
+
+  alias BaseException = DUnitAssertError;
+
 } else {
 
-  class AssertException : Exception
-  {
-    this(string msg, string file = __FILE__, size_t line = __LINE__) @safe pure
-    {
-      super(msg, file, line);
-    }
-  }
+  alias BaseException = Exception;
 }
 
+/**
+ * An exception thrown when a test fails
+ */
+public class AssertException : BaseException
+{
+
+  /**
+   * Constructor
+   *
+   * Params:
+   *  msg = The failure message
+   *  file = The filename where the test failed
+   *  line = The line where the test failed
+   */
+  this(string msg, string file = __FILE__, size_t line = __LINE__) @safe pure
+  {
+    super(msg, file, line);
+  }
+}
 
