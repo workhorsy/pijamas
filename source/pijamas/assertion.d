@@ -20,11 +20,11 @@ import pijamas.exception;
  */
 Assertion!T should(T)(auto ref T context)
 {
-  return new Assertion!T(context);
+  return Assertion!T(context);
 }
 
 /// Class returned by should, that it's used to generate the fluent API
-class Assertion(T)
+struct Assertion(T)
 {
   private static bool callable = isCallable!T;
   private bool negated = false;
@@ -521,21 +521,21 @@ class Assertion(T)
 {
   //  it("returns the correct message for binary operators",
   {
-    auto a = new Assertion!int(10);
+    auto a = Assertion!int(10);
     a.operator = "equal";
     assert(a.message(20) == "expected 10 to equal 20");
   }
 
   //  it("returns the correct message for unary operators",
   {
-    auto a = new Assertion!string("function");
+    auto a = Assertion!string("function");
     a.operator = "throw";
     assert(a.message == "expected function to throw");
   }
 
   //  it("returns the correct message for negated operators",
   {
-    auto a = new Assertion!int(10);
+    auto a = Assertion!int(10);
     a.operator = "be";
     assert(a.not.message(false) == "expected 10 to not be false");
   }
