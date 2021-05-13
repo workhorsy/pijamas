@@ -3,12 +3,15 @@
   "description": "Tests of Pijamas, using unit-threaded",
   "license": "MIT",
   "targetType": "executable",
+  "dependencies": {
+    "pijamas": {"path": "../../"}
+  },
   "configurations": [
     {
       "name": "unittest",
       "targetType": "executable",
-      "importPaths": [".", "../source", "../../source"],
-      "sourcePaths": [".", "../source", "../../source"],
+      "importPaths": [".", "../source"],
+      "sourcePaths": [".", "../source"],
       "preBuildCommands": ["$DUB run unit-threaded -c gen_ut_main -- -f ut.d -d $DUB"],
       "mainSourceFile": "ut.d",
       "dependencies": {

@@ -8,7 +8,8 @@ module pijamas_spec;
 
 import std.exception;
 
-import pijamas;
+import pijamas : should;
+import pijamas.exception : AssertException;
 
 version(Debug_Failing_Tests) {
   @("Failing test")

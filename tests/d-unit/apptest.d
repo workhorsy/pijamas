@@ -3,13 +3,13 @@ module dunittest;
 import std.exception;
 
 import dunit;
-import pijamas : should, PiException = AssertException;
+import pijamas : should;
+import pijamas.exception : PiException = AssertException;
 
 int main (string[] args)
 {
   return dunit_main(args);
 }
-/*
 class Test
 {
     mixin UnitTest;
@@ -56,4 +56,3 @@ version(Debug_Failing_Tests) {
       }
   }
 }
-*/
