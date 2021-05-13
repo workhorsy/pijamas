@@ -86,6 +86,21 @@ struct Assertion(T)
     throw new AssertException(message, file, line);
   }
 
+  // Generates string message when an assertation fails
+  private string message(U)(U other) @trusted
+  {
+    import std.string : format;
+    return format("expected %s to %s%s%s", context.to!string, (negated ?
+        "not " : ""), operator, (" " ~ other.to!string));
+  }
+
+  // Generates string message when an assertation fails
+  private string message() @trusted
+  {
+    import std.string : format;
+    return format("expected %s to %s%s", context.to!string, (negated ? "not " : ""), operator);
+  }
+
   /**
    * Asserts for equality between two objects. Returns the value wrapped around the assertion.
    *
@@ -206,21 +221,6 @@ struct Assertion(T)
       }
     }
     return context;
-  }
-
-  // Generates string message when an assertation fails
-  private string message(U)(U other) @trusted
-  {
-    import std.string : format;
-    return format("expected %s to %s%s%s", context.to!string, (negated ?
-        "not " : ""), operator, (" " ~ other.to!string));
-  }
-
-  // Generates string message when an assertation fails
-  private string message() @trusted
-  {
-    import std.string : format;
-    return format("expected %s to %s%s", context.to!string, (negated ? "not " : ""), operator);
   }
 
   /**
