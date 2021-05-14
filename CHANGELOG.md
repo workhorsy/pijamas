@@ -5,7 +5,8 @@
 * Launch tests using silly, unit-threaded, trial and dunit.
 * Assertions now throws AssertException that it's an alias to AssertError or to
     unit-threaded UnitTestException;
-
+* Added expect and .to()
+* Now Assertion is a struct
 
 # v0.3.5
 
