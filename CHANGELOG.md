@@ -3,8 +3,8 @@
 * Moved unit-tests to an separate foolder to avoid pollute other projects with
     Pijamas unit-testing dependencies.
 * Launch tests using silly, unit-threaded, trial and dunit.
-* Assertions now throws AssertException that it's an alias to AssertError or to
-    unit-threaded UnitTestException;
+* Assertions now throws AssertException that extends from Exception or to
+    unit-threaded UnitTestException
 * Added expect and .to()
 * Now Assertion is a struct
 
