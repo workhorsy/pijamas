@@ -23,10 +23,12 @@ import pyjamas;
 ## Introduction
 
 Pyjamas, and by extension Pijamas, is an assertion library heavily inspired by [visionmedia'ś
-should.js](https://github.com/visionmedia/should.js) module for Node.JS. It
-aspires to be totally independent of the unit test runner and be IDE friendly.
+should.js](https://github.com/visionmedia/should.js) module for Node.JS.
 
-<img src="https://zardoz89.github.io/pijamas/assets/img/ide.png" />
+It aspires to be totally independent of the unit test runner and be IDE friendly. Also, it 
+offers a fluent like syntax that allow to make human reaable assertions.
+
+<img src="https://zardoz89.github.io/pijamas/assets/img/ide.png" style="margin: 0 auto; display: block;" />
 
 ## General Assertions
 
