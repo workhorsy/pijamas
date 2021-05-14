@@ -27,12 +27,46 @@ import pyjamas;
 ## Introduction
 
 Pyjamas, and by extension Pijamas, is an assertion library heavily inspired by [visionmedia'ś
-should.js](https://github.com/visionmedia/should.js) module for Node.JS. It
-aspires to be totally independent of the unit test runner and be IDE friendly.
+should.js](https://github.com/visionmedia/should.js) module for Node.JS.
 
-<img src="https://zardoz89.github.io/pijamas/assets/img/ide.png" />
+It aspires to be totally independent of the unit test runner and be IDE friendly. Also, it 
+offers a fluent like syntax that allow to make human reaable assertions.
 
-## General Assertions
+<img src="https://zardoz89.github.io/pijamas/assets/img/ide.png" style="margin: 0 auto; display: block;" />
+
+A failing assertation throws an AssertException with information of what was
+expected, and file and line number where it failed. An AssertException it's an
+alias to AsertError or to UnitTestException if Unit-thereaded it's present.
+
+<img src="https://zardoz89.github.io/pijamas/assets/img/error.png" />
+
+## Usage
+
+Simply add pijamas as a dependency :
+
+dub.sdl:
+```sdl
+configuration "unittest" {
+    dependency "pijamas" version="<current version>"
+}
+```
+
+dub.json:
+```json
+"configurations": [
+    {
+        "name": "unittest",
+        "dependencies": {
+            "pijamas": "<current version>"
+        }
+    }
+]
+```
+
+And import pijamas where you nee it.
+
+
+### General Assertions
 
 Pijamas exports two functions `should` and `expect` meant for public use. Because of D's
 lookup shortcut syntax, one is able to use both `should(obj)`, `expect(obj)`, 
@@ -210,13 +244,6 @@ void notThrowing()
 should(&notThrowing).not.Throw;
 ```
 
-## An example of failing an assertion
-
-<img src="https://zardoz89.github.io/pijamas/assets/img/error.png" />
-
-A failing assertation throws an AssertException with information of what was
-expected, and file and line number where it failed. An AssertException it's an
-alias to AsertError or to UnitTestException if Unit-thereaded it's present.
 
 ## Need more documentation?
 
@@ -224,9 +251,7 @@ I know the documentation is still somewhat lacking, but it's better than
 nothing, I guess? :)
 
 Try looking at the test suite in [`tests/pyjamas_spec.d`](/tests/pyjamas_spec.d)
-to see some "real world" testing of the library. Even though we are using [Silly](https://gitlab.com/AntonMeep/silly)
-testing runner, this library is supposed to be framework agnostic.
-
+to see some "real world" testing of the library. 
 BTW, I'll be glad to accept help in writting the documentation.
 
 ## Tests
@@ -234,8 +259,18 @@ BTW, I'll be glad to accept help in writting the documentation.
 Run tests with:
 
 ```
-dub test :silly-unittest 
+dub test --root=tests/silly 
 ```
+
+but you can try any other test runner :
+```
+dub test --root=tests/unit-threaded
+dub test --root=tests/dunit
+dub test --root=tests/d-unit
+dub run trial:runner@~master
+```
+A special config "fail-tests", exists (but only works on silly and on dunit) that 
+enforces to fail some tests to help debug Pijamas mesages.
 
 ## Why 'Pijamas'
 
@@ -243,6 +278,20 @@ The original project was name "Pyjamas", a name that could be confuse, and have
 name clash on search engines, with Python's Pyjamas framework. So a new name
 sees a good idea. Pijamas is the word on Spanish and English for "Pyjamas", so
 it's a start. If anyone have a better name, hurry up to suggest it.
+
+And the real why. Because Pyjamas had a nice syntax compared against others 
+libraries, but sadly was abandoned.
+
+Also, was the only barely working assert (at the time) library that don't 
+poluttes dub.selections with unit-threaded when you aren't using unit-threaded.
+Even though we are using [Silly](https://gitlab.com/AntonMeep/silly)
+testing runner, this library is supposed to be framework agnostic. The fact, 
+it's tha the test suite has been testes running it with 
+[unit-threaded](https://github.com/atilaneves/unit-threaded), 
+[dunit](https://github.com/nomad-software/dunit), 
+[d-unit](https://github.com/linkrope/dunit), [silly](https://gitlab.com/AntonMeep/silly)
+and [trial](http://trial.szabobogdan.com/).
+
 
 ## License
 
