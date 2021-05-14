@@ -15,13 +15,21 @@ import std.traits : hasMember, isSomeString, isCallable, isAssociativeArray,
 import pijamas.exception;
 
 /**
- * Pijamas exports a single function should meant for public use. Because of D’s lookup shortcut syntax, one is able
- * to use both should(obj) and obj.should to get an object wrapped around an Assertion instance
+ * The function **should** it's an helper or syntax sugar to create the assertation. 
+ * Because of D’s lookup shortcut syntax, one is able to use both `should(obj)` and `obj.should` to
+ * get an object wrapped around an Assertion instance
  */
-Assertion!T should(T)(auto ref T context)
+public Assertion!T should(T)(auto ref T context)
 {
   return Assertion!T(context);
 }
+
+/**
+ * The function **expect** it's an helper or syntax sugar to create the assertation. 
+ * Because of D’s lookup shortcut syntax, one is able to use both `expect(obj)` and `obj.expect` to
+ * get an object wrapped around an Assertion instance
+ */
+public alias expect = should;
 
 /// Class returned by should, that it's used to generate the fluent API
 struct Assertion(T)
@@ -44,6 +52,8 @@ struct Assertion(T)
 
   /// Identity function. Simply does nothing beyond making assertation more human friendly
   alias be = id;
+  ///ditto
+  alias to = id;
   ///ditto
   alias as = id;
   ///ditto
@@ -510,6 +520,7 @@ struct Assertion(T)
 {
   //  it("returns an Assertion", {
   assert(is(typeof(10.should) == Assertion!int));
+  assert(is(typeof(10f.expect) == Assertion!float));
 }
 
 @("Should Assertion")

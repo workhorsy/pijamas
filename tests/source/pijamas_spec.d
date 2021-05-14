@@ -8,7 +8,7 @@ module pijamas_spec;
 
 import std.exception;
 
-import pijamas : should;
+import pijamas;
 import pijamas.exception : AssertException;
 
 version(Debug_Failing_Tests) {
@@ -44,6 +44,7 @@ version(Debug_Failing_Tests) {
 
     string str2 = null;
     str2.should.not.exist;
+
   }
 
   //  it("With not nullable, must do nothing
@@ -147,6 +148,7 @@ version(Debug_Failing_Tests) {
   //  it("asserts whether two values are equal",
   {
     10.should.be.equal(10);
+    10.expect.to.be.equal(10);
     10.should.not.be.equal(5);
     10.should.not;
     assertThrown!AssertException(10.should.be.equal(2));
