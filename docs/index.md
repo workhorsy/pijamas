@@ -6,13 +6,12 @@ pijamas
 =======
 [![DUB](https://img.shields.io/dub/v/pijamas)](https://code.dlang.org/packages/pijamas)
 ![Build status](https://img.shields.io/github/checks-status/Zardoz89/pijamas/master)
-[![Build status](https://ci.appveyor.com/api/projects/status/7rwhguv6wfvyrufs/branch/master?svg=true)](https://ci.appveyor.com/project/Zardoz89/pijamas/branch/master)
 [![codecov](https://codecov.io/gh/Zardoz89/pijamas/branch/master/graph/badge.svg?token=LWSVAL95DG)](https://codecov.io/gh/Zardoz89/pijamas)
 
 - - -
 
 <img src="https://zardoz89.github.io/pijamas/assets/img/logo-big.png" align="left"/>
-A BDD assertion library for D.
+A BDD fluent assertion library for D.
 
 Forked from [Yamadacpc's Pyjamas](http://yamadapc.github.io/pyjamas/)
 
@@ -29,15 +28,17 @@ import pyjamas;
 
 Pyjamas, and by extension Pijamas, is an assertion library heavily inspired by [visionmedia'ś
 should.js](https://github.com/visionmedia/should.js) module for Node.JS. It
-aspires to be totally independent of the unit test runner.
+aspires to be totally independent of the unit test runner and be IDE friendly.
+
+<img src="https://zardoz89.github.io/pijamas/assets/img/ide.png" />
 
 ## General Assertions
 
-Pijamas exports a single function `should` meant for public use. Because of D's
-lookup shortcut syntax, one is able to use both `should(obj)` and `obj.should`
-to get an object wrapped around an `Assertion` instance.
+Pijamas exports two functions `should` and `expect` meant for public use. Because of D's
+lookup shortcut syntax, one is able to use both `should(obj)`, `expect(obj)`, 
+`obj.should` and `obj.expect` to get an object wrapped around an `Assertion` instance.
 
-#### `.be` `.as` `.of` `.a` `.and` `.have` `.which`
+#### `.be` `.to` `.as` `.of` `.a` `.and` `.have` `.which`
 
 These methods all are aliases for an identity function, returning the assertion
 instance without modification. This allows one to have a more fluent API, by
@@ -46,6 +47,7 @@ chaining statements together:
 ```d
 10.should.be.equal(10);
 [1, 2, 3, 4].should.have.length(4);
+10.expect.to.not.be.equal(0);
 ```
 
 #### `Assertion not()`
@@ -147,14 +149,14 @@ Asserts that the .lenght property or function value is equal to 0;
 
 ```d
 [].should.be.empty;
-"".should.be.empty;
+"".expect.to.be.empty;
 ```
 
 #### `auto match(RegEx)(RegEx re, string file = __FILE__, size_t line = __LINE__);`
 
 Asserts for a string wrapped around the Assertion to match a regular expression.
 ```d
-"something weird".should.match(`[a-z]+`);
+"something weird".expect.to.match(`[a-z]+`);
 "something weird".should.match(regex(`[a-z]+`));
 "something 2 weird".should.not.match(ctRegex!`^[a-z]+$`));
 "1234numbers".should.match(`[0-9]+[a-z]+`);
