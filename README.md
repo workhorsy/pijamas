@@ -2,13 +2,12 @@ pijamas
 =======
 [![DUB](https://img.shields.io/dub/v/pijamas)](https://code.dlang.org/packages/pijamas)
 ![Build status](https://img.shields.io/github/checks-status/Zardoz89/pijamas/master)
-[![Build status](https://ci.appveyor.com/api/projects/status/7rwhguv6wfvyrufs/branch/master?svg=true)](https://ci.appveyor.com/project/Zardoz89/pijamas/branch/master)
 [![codecov](https://codecov.io/gh/Zardoz89/pijamas/branch/master/graph/badge.svg?token=LWSVAL95DG)](https://codecov.io/gh/Zardoz89/pijamas)
 
 - - -
 
 <img src="https://zardoz89.github.io/pijamas/assets/img/logo-big.png" align="left"/>
-A BDD assertion library for D.
+A BDD fluent assertion library for D.
 
 Forked from [Yamadacpc's Pyjamas](http://yamadapc.github.io/pyjamas/)
 
@@ -26,13 +25,50 @@ import pyjamas;
 Pyjamas, and by extension Pijamas, is an assertion library heavily inspired by [visionmedia'ś
 should.js](https://github.com/visionmedia/should.js) module for Node.JS.
 
-## General Assertions
+It aspires to be totally independent of the unit test runner and be IDE friendly. Also, it 
+offers a fluent like syntax that allow to make human reaable assertions.
 
-Pijamas exports a single function `should` meant for public use. Because of D's
-lookup shortcut syntax, one is able to use both `should(obj)` and `obj.should`
-to get an object wrapped around an `Assertion` instance.
+<img src="https://zardoz89.github.io/pijamas/assets/img/ide.png" style="margin: 0 auto; display: block;" />
 
-#### `.be` `.as` `.of` `.a` `.and` `.have` `.which`
+A failing assertation throws an AssertException with information of what was
+expected, and file and line number where it failed. An AssertException it's an
+alias to AsertError or to UnitTestException if Unit-thereaded it's present.
+
+<img src="https://zardoz89.github.io/pijamas/assets/img/error.png" />
+
+## Usage
+
+Simply add pijamas as a dependency :
+
+dub.sdl:
+```sdl
+configuration "unittest" {
+    dependency "pijamas" version="<current version>"
+}
+```
+
+dub.json:
+```json
+"configurations": [
+    {
+        "name": "unittest",
+        "dependencies": {
+            "pijamas": "<current version>"
+        }
+    }
+]
+```
+
+And import pijamas where you nee it.
+
+
+### General Assertions
+
+Pijamas exports two functions `should` and `expect` meant for public use. Because of D's
+lookup shortcut syntax, one is able to use both `should(obj)`, `expect(obj)`, 
+`obj.should` and `obj.expect` to get an object wrapped around an `Assertion` instance.
+
+#### `.be` `.to` `.as` `.of` `.a` `.and` `.have` `.which`
 
 These methods all are aliases for an identity function, returning the assertion
 instance without modification. This allows one to have a more fluent API, by
@@ -41,6 +77,7 @@ chaining statements together:
 ```d
 10.should.be.equal(10);
 [1, 2, 3, 4].should.have.length(4);
+10.expect.to.not.be.equal(0);
 ```
 
 #### `Assertion not()`
@@ -142,14 +179,14 @@ Asserts that the .lenght property or function value is equal to 0;
 
 ```d
 [].should.be.empty;
-"".should.be.empty;
+"".expect.to.be.empty;
 ```
 
 #### `auto match(RegEx)(RegEx re, string file = __FILE__, size_t line = __LINE__);`
 
 Asserts for a string wrapped around the Assertion to match a regular expression.
 ```d
-"something weird".should.match(`[a-z]+`);
+"something weird".expect.to.match(`[a-z]+`);
 "something weird".should.match(regex(`[a-z]+`));
 "something 2 weird".should.not.match(ctRegex!`^[a-z]+$`));
 "1234numbers".should.match(`[0-9]+[a-z]+`);
@@ -203,12 +240,6 @@ void notThrowing()
 should(&notThrowing).not.Throw;
 ```
 
-## An example of failing an assertion
-
-<img src="https://zardoz89.github.io/pijamas/assets/img/error.png" />
-
-A failing assertation throws an Exception with information of what was
-expected, and file and line number where it failed
 
 ## Need more documentation?
 
@@ -216,9 +247,7 @@ I know the documentation is still somewhat lacking, but it's better than
 nothing, I guess? :)
 
 Try looking at the test suite in [`tests/pyjamas_spec.d`](/tests/pyjamas_spec.d)
-to see some "real world" testing of the library. Even though we are using [Silly](https://gitlab.com/AntonMeep/silly)
-testing runner, this library is supposed to be framework agnostic.
-
+to see some "real world" testing of the library. 
 BTW, I'll be glad to accept help in writting the documentation.
 
 ## Tests
@@ -226,8 +255,18 @@ BTW, I'll be glad to accept help in writting the documentation.
 Run tests with:
 
 ```
-dub test
+dub test --root=tests/silly 
 ```
+
+but you can try any other test runner :
+```
+dub test --root=tests/unit-threaded
+dub test --root=tests/dunit
+dub test --root=tests/d-unit
+dub run trial:runner@~master
+```
+A special config "fail-tests", exists (but only works on silly and on dunit) that 
+enforces to fail some tests to help debug Pijamas mesages.
 
 ## Why 'Pijamas'
 
@@ -235,6 +274,20 @@ The original project was name "Pyjamas", a name that could be confuse, and have
 name clash on search engines, with Python's Pyjamas framework. So a new name
 sees a good idea. Pijamas is the word on Spanish and English for "Pyjamas", so
 it's a start. If anyone have a better name, hurry up to suggest it.
+
+And the real why. Because Pyjamas had a nice syntax compared against others 
+libraries, but sadly was abandoned.
+
+Also, was the only barely working assert (at the time) library that don't 
+poluttes dub.selections with unit-threaded when you aren't using unit-threaded.
+Even though we are using [Silly](https://gitlab.com/AntonMeep/silly)
+testing runner, this library is supposed to be framework agnostic. The fact, 
+it's tha the test suite has been testes running it with 
+[unit-threaded](https://github.com/atilaneves/unit-threaded), 
+[dunit](https://github.com/nomad-software/dunit), 
+[d-unit](https://github.com/linkrope/dunit), [silly](https://gitlab.com/AntonMeep/silly)
+and [trial](http://trial.szabobogdan.com/).
+
 
 ## License
 

@@ -42,7 +42,13 @@ jobs:
           dub build --parallel -b release
           dub clean --all-packages -q
           # Run tests
-          dub test --parallel --coverage
+          dub test --root=tests/silly --parallel --coverage
+          dub test --root=tests/unit-threaded --parallel --coverage
+          dub test --root=tests/d-unit --parallel
+      - name: 'Launch tests with Trial'
+        if: runner.os == 'Linux'
+        run:
+          dub run trial:runner@~master
 
       - name: Upload Coverage to Codecov
         # Upload test coverage

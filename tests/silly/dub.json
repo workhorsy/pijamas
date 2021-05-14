@@ -1,0 +1,20 @@
+{
+  "name": "silly-tests",
+  "description": "Tests of Pijamas, using silly",
+  "license": "MIT",
+  "targetType": "library",
+  "importPaths": ["../source", "../../source"],
+  "sourcePaths": ["../source", "../../source"],
+  "dependencies": {
+    "silly": "~>1.1"
+  },
+  "configurations": [
+    {
+      "name": "silly-tests"
+    },
+    {
+      "name": "fail-tests",
+      "versions": ["Debug_Failing_Tests"]
+    }
+  ]
+}

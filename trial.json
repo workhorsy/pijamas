@@ -1,0 +1,14 @@
+{
+	"warningTestDuration": 20,
+	"maxThreads": 0,
+	"reporters": [
+		"spec",
+		"result",
+		"xunit"
+	],
+	"artifactsLocation": ".trial",
+	"testDiscovery": [
+		"trial.discovery.unit.UnitTestDiscovery"
+	],
+	"dangerTestDuration": 100
+}

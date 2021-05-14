@@ -1,10 +1,9 @@
 /**
  * Pijamas, a BDD assertion library for D.
  *
- * Authors: Pedro Tacla Yamada, Luis Panadero Guardeño
  * License: Licensed under the MIT license. See LICENSE for more information.
  */
-module pijamas;
+module pijamas.assertion;
 
 import std.algorithm : canFind, isSorted;
 import std.conv : to;
@@ -13,17 +12,27 @@ import std.regex : Regex, StaticRegex;
 import std.traits : hasMember, isSomeString, isCallable, isAssociativeArray,
   isImplicitlyConvertible, Unqual;
 
+import pijamas.exception;
+
 /**
- * Pijamas exports a single function should meant for public use. Because of D’s lookup shortcut syntax, one is able
- * to use both should(obj) and obj.should to get an object wrapped around an Assertion instance
+ * The function **should** it's an helper or syntax sugar to create the assertation. 
+ * Because of D’s lookup shortcut syntax, one is able to use both `should(obj)` and `obj.should` to
+ * get an object wrapped around an Assertion instance
  */
-Assertion!T should(T)(auto ref T context)
+public Assertion!T should(T)(auto ref T context)
 {
-  return new Assertion!T(context);
+  return Assertion!T(context);
 }
 
+/**
+ * The function **expect** it's an helper or syntax sugar to create the assertation. 
+ * Because of D’s lookup shortcut syntax, one is able to use both `expect(obj)` and `obj.expect` to
+ * get an object wrapped around an Assertion instance
+ */
+public alias expect = should;
+
 /// Class returned by should, that it's used to generate the fluent API
-class Assertion(T)
+struct Assertion(T)
 {
   private static bool callable = isCallable!T;
   private bool negated = false;
@@ -43,6 +52,8 @@ class Assertion(T)
 
   /// Identity function. Simply does nothing beyond making assertation more human friendly
   alias be = id;
+  ///ditto
+  alias to = id;
   ///ditto
   alias as = id;
   ///ditto
@@ -77,12 +88,36 @@ class Assertion(T)
   }
 
   // Helper that evaluates the asserted expression
-  private U ok(U)(U expr, lazy string message, string file = __FILE__, size_t line = __LINE__) @safe pure
+  private U ok(U, V)(lazy U expr, V value, string file = __FILE__, size_t line = __LINE__) @safe
   {
     if (negated ? !expr : expr) {
       return expr;
     }
-    throw new Exception(message, file, line);
+    throw new AssertException(this.message(value), file, line);
+  }
+
+  // Helper that evaluates the asserted expression
+  private U ok(U)(lazy U expr, string file = __FILE__, size_t line = __LINE__) @safe
+  {
+    if (negated ? !expr : expr) {
+      return expr;
+    }
+    throw new AssertException(this.message(), file, line);
+  }
+
+  // Generates string message when an assertation fails
+  private string message(U)(U other) @trusted
+  {
+    import std.string : format;
+    return format("expected %s to %s%s%s", context.to!string, (negated ?
+        "not " : ""), operator, (" " ~ other.to!string));
+  }
+
+  // Generates string message when an assertation fails
+  private string message() @trusted
+  {
+    import std.string : format;
+    return format("expected %s to %s%s", context.to!string, (negated ? "not " : ""), operator);
   }
 
   /**
@@ -96,7 +131,7 @@ class Assertion(T)
    */
   T equal(U)(U other, string file = __FILE__, size_t line = __LINE__) @trusted
   {
-    this.ok(context == other, this.message(other), file, line);
+    this.ok(context == other, other, file, line);
     return context;
   }
 
@@ -160,7 +195,7 @@ class Assertion(T)
   {
     import std.math : isClose;
     operator = "be approximated equal than";
-    this.ok(isClose(context, other, maxRelDiff, maxAbsDiff), this.message(other), file, line);
+    this.ok(isClose(context, other, maxRelDiff, maxAbsDiff), other, file, line);
     return context;
   }
 
@@ -201,25 +236,10 @@ class Assertion(T)
       }))
     {
       if (context is null) {
-        this.ok(false, this.message, file, line);
+        this.ok(false, file, line);
       }
     }
     return context;
-  }
-
-  // Generates string message when an assertation fails
-  private string message(U)(U other) @trusted
-  {
-    import std.string : format;
-    return format("expected %s to %s%s%s", context.to!string, (negated ?
-        "not " : ""), operator, (" " ~ other.to!string));
-  }
-
-  // Generates string message when an assertation fails
-  private string message() @trusted
-  {
-    import std.string : format;
-    return format("expected %s to %s%s", context.to!string, (negated ? "not " : ""), operator);
   }
 
   /**
@@ -234,7 +254,7 @@ class Assertion(T)
   bool biggerThan(U)(U other, string file = __FILE__, size_t line = __LINE__) @trusted
   {
     operator = "be bigger than";
-    return this.ok(context > other, this.message(other), file, line);
+    return this.ok(context > other, other, file, line);
   }
 
   /**
@@ -250,7 +270,7 @@ class Assertion(T)
   bool biggerOrEqualThan(U)(U other, string file = __FILE__, size_t line = __LINE__) @trusted
   {
     operator = "be bigger or equal than";
-    return this.ok(context >= other, this.message(other), file, line);
+    return this.ok(context >= other, other, file, line);
   }
 
   /**
@@ -265,7 +285,7 @@ class Assertion(T)
   bool smallerThan(U)(U other, string file = __FILE__, size_t line = __LINE__) @trusted
   {
     operator = "be smaller than";
-    return this.ok(context < other, this.message(other), file, line);
+    return this.ok(context < other, other, file, line);
   }
 
   /**
@@ -281,7 +301,7 @@ class Assertion(T)
   bool smallerOrEqualThan(U)(U other, string file = __FILE__, size_t line = __LINE__) @trusted
   {
     operator = "be smaller or equal than";
-    return this.ok(context <= other, this.message(other), file, line);
+    return this.ok(context <= other, other, file, line);
   }
 
   static if (isForwardRange!T && __traits(compiles, context.isSorted))
@@ -298,7 +318,7 @@ class Assertion(T)
     bool sorted(string file = __FILE__, size_t line = __LINE__) @trusted
     {
       operator = "be sorted";
-      return this.ok(context.isSorted, this.message, file, line);
+      return this.ok(context.isSorted, file, line);
     }
   }
 
@@ -315,7 +335,7 @@ class Assertion(T)
     void key(U)(U other, string file = __FILE__, size_t line = __LINE__) @trusted
     {
       operator = "have key";
-      this.ok(!(other !in context), this.message(other), file, line);
+      this.ok(!(other !in context), other, file, line);
     }
   }
 
@@ -340,7 +360,7 @@ class Assertion(T)
       }
 
       operator = "contain value";
-      this.ok(canFind(pool, other), this.message(other), file, line);
+      this.ok(canFind(pool, other), other, file, line);
       return other;
     }
 
@@ -365,7 +385,7 @@ class Assertion(T)
     U length(U)(U len, string file = __FILE__, size_t line = __LINE__) @trusted
     {
       operator = "have length of";
-      this.ok(context.length == len, this.message(len), file, line);
+      this.ok(context.length == len, len, file, line);
       return len;
     }
 
@@ -381,7 +401,7 @@ class Assertion(T)
     bool empty(string file = __FILE__, size_t line = __LINE__) @trusted
     {
       operator = "is empty";
-      return this.ok(context.length == 0, this.message(), file, line);
+      return this.ok(context.length == 0, file, line);
     }
   }
 
@@ -410,7 +430,7 @@ class Assertion(T)
 
       auto m = match(context, re);
       operator = "match";
-      this.ok(!m.empty, this.message(re), file, line);
+      this.ok(!m.empty, re, file, line);
       return m;
     }
 
@@ -422,7 +442,7 @@ class Assertion(T)
 
       auto m = match(context, regex(re));
       operator = "match";
-      this.ok(!m.empty, this.message(re), file, line);
+      this.ok(!m.empty, re, file, line);
       return m;
     }
   }
@@ -440,7 +460,7 @@ class Assertion(T)
      */
     bool True(string file = __FILE__, size_t line = __LINE__) @safe
     {
-      return this.ok(context == true, this.message(true), file, line);
+      return this.ok(context == true, true, file, line);
     }
 
     /**
@@ -454,7 +474,7 @@ class Assertion(T)
      */
     bool False(string file = __FILE__, size_t line = __LINE__) @safe
     {
-      return !this.ok(context == false, this.message(false), file, line);
+      return !this.ok(context == false, false, file, line);
     }
   }
 
@@ -489,7 +509,7 @@ class Assertion(T)
       } catch (T) {
         thrown = true;
       }
-      this.ok(thrown, this.message(), file, line);
+      this.ok(thrown, file, line);
     }
   }
 
@@ -500,6 +520,7 @@ class Assertion(T)
 {
   //  it("returns an Assertion", {
   assert(is(typeof(10.should) == Assertion!int));
+  assert(is(typeof(10f.expect) == Assertion!float));
 }
 
 @("Should Assertion")
@@ -520,21 +541,21 @@ class Assertion(T)
 {
   //  it("returns the correct message for binary operators",
   {
-    auto a = new Assertion!int(10);
+    auto a = Assertion!int(10);
     a.operator = "equal";
     assert(a.message(20) == "expected 10 to equal 20");
   }
 
   //  it("returns the correct message for unary operators",
   {
-    auto a = new Assertion!string("function");
+    auto a = Assertion!string("function");
     a.operator = "throw";
     assert(a.message == "expected function to throw");
   }
 
   //  it("returns the correct message for negated operators",
   {
-    auto a = new Assertion!int(10);
+    auto a = Assertion!int(10);
     a.operator = "be";
     assert(a.not.message(false) == "expected 10 to not be false");
   }

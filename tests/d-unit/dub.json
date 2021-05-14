@@ -1,0 +1,18 @@
+{
+  "name": "d-unit-tests",
+  "description": "Tests of Pijamas, using d-unit",
+  "license": "MIT",
+  "importPaths": [".", "../source", "../../source"],
+  "sourcePaths": [".", "../source", "../../source"],
+  "targetType": "library",
+  "dependencies": {
+    "d-unit": "~>0.10"
+  },
+  "configurations": [
+    {
+      "name": "unittest",
+      "mainSourceFile": "apptest.d",
+      "targetType": "executable"
+    }
+  ]
+}
