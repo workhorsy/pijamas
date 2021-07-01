@@ -61,6 +61,18 @@ dub.json:
 
 And import pijamas where you nee it.
 
+## NoGC mode
+
+Pijamas haves a experimental support of nogc exceptions (thanks to mir-algorithm). This allow to use Pijamas on @nogc unittest blocks. Howeverm not the whole API it's allowed to be used on this way. For example, should.match(), depends on std.regex and isn't @nogc compatible.
+
+To use this @nogc mode, simply use dub's subConfigurations to call the "nogc" configuration, and togle `dip1008`. However, remeber that your unit-tests would have the mir-algorithm as indirect dependency.
+
+dub.json:
+```json
+"subConfigurations": {
+    "pijamas": "nogc"
+}
+```
 
 ### General Assertions
 

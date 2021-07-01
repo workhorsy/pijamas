@@ -6,10 +6,9 @@
 module pijamas.assertion;
 
 import std.algorithm : canFind, isSorted;
-import std.conv : to;
 import std.range : isInputRange, isForwardRange, hasLength, ElementEncodingType, empty;
 import std.regex : Regex, StaticRegex;
-import std.traits : hasMember, isSomeString, isCallable, isAssociativeArray,
+import std.traits : hasMember, isSomeString, isCallable, isArray, isAssociativeArray,
   isImplicitlyConvertible, Unqual;
 
 import pijamas.exception;
@@ -81,35 +80,125 @@ struct Assertion(T) {
     return this;
   }
 
-  // Helper that evaluates the asserted expression
-  private U ok(U, V)(lazy U expr, V value, string file = __FILE__, size_t line = __LINE__) @safe {
-    if (negated ? !expr : expr) {
-      return expr;
+  version (MirNoGCException) {
+    // Sadly lazy not works with nogc
+    // Helper that evaluates the asserted expression
+    private U ok(U, V)(U expr, V value, string file = __FILE__, size_t line = __LINE__) @nogc @safe {
+      if (negated ? !expr : expr) {
+        return expr;
+      }
+      throw new AssertException(this.message(value).data(), file, line);
     }
-    throw new AssertException(this.message(value), file, line);
-  }
 
-  // Helper that evaluates the asserted expression
-  private U ok(U)(lazy U expr, string file = __FILE__, size_t line = __LINE__) @safe {
-    if (negated ? !expr : expr) {
-      return expr;
+    // Helper that evaluates the asserted expression
+    private U ok(U)(U expr, string file = __FILE__, size_t line = __LINE__) @nogc @safe {
+      if (negated ? !expr : expr) {
+        return expr;
+      }
+      throw new AssertException(this.message().data(), file, line);
     }
-    throw new AssertException(this.message(), file, line);
-  }
 
-  // Generates string message when an assertation fails
-  private string message(U)(U other) @trusted {
-    import std.string : format;
+    import mir.format;
+    // Generates string message when an assertation fails
+    private stringBuf message(U)(U other) @trusted @nogc {
+      import std.traits;
+      import mir.conv : to;
+      import mir.small_string;
 
-    return format("expected %s to %s%s%s", context.to!string, (negated ?
-        "not " : ""), operator, (" " ~ other.to!string));
-  }
 
-  // Generates string message when an assertation fails
-  private string message() @trusted {
-    import std.string : format;
+      alias S = SmallString!512;
+      auto buf = stringBuf();
+      buf << "expected [" << T.stringof  << "]";
+      static if (__traits(isScalar, T) && !isPointer!T) {
+        buf << " " << to!S(this.context);
+      }
+      buf << " to ";
+      if (negated) {
+        buf << "not ";
+      }
+      buf << operator << " [" << U.stringof  << "]";
+      static if (__traits(isScalar, U) && !isPointer!U) {
+        buf << " " << to!S(other);
+      }
+      return buf;
+    }
 
-    return format("expected %s to %s%s", context.to!string, (negated ? "not " : ""), operator);
+    // Generates string message when an assertation fails
+    private stringBuf message() @trusted @nogc {
+      import std.traits;
+      import mir.conv : to;
+      import mir.small_string;
+
+      alias S = SmallString!512;
+      auto buf = stringBuf();
+      buf << "expected [" << T.stringof  << "]";
+      static if (__traits(isScalar, T) && !isPointer!T) {
+        buf << " " << to!S(this.context);
+      }
+      buf << " to ";
+      if (negated) {
+        buf << "not ";
+      }
+      buf << operator;
+      return buf;
+    }
+
+  } else {
+
+    // Helper that evaluates the asserted expression
+    private U ok(U, V)(lazy U expr, V value, string file = __FILE__, size_t line = __LINE__) @safe {
+      if (negated ? !expr : expr) {
+        return expr;
+      }
+      throw new AssertException(this.message(value), file, line);
+    }
+
+    // Helper that evaluates the asserted expression
+    private U ok(U)(lazy U expr, string file = __FILE__, size_t line = __LINE__) @safe {
+      if (negated ? !expr : expr) {
+        return expr;
+      }
+      throw new AssertException(this.message(), file, line);
+    }
+
+    // Generates string message when an assertation fails
+    private string message(U)(U other) @trusted {
+      import std.string : format;
+      import std.conv : to;
+      import std.traits : isPointer;
+
+      static if (!isPointer!U) {
+        string otherStr = to!string(other);
+      } else {
+        string otherStr = U.stringof;
+      }
+
+      static if (__traits(isScalar, T) && !isPointer!T) {
+        return format("expected [%s] %s to %s%s%s", T.stringof, context, (negated ?
+            "not " : ""), operator, (" " ~ otherStr));
+      } else static if (!isPointer!T) {
+        return format("expected [%s] %s to %s%s%s", T.stringof, context.to!string, (negated ?
+            "not " : ""), operator, (" " ~ otherStr));
+      } else {
+        return format("expected [%s] to %s%s%s", T.stringof, (negated ?
+            "not " : ""), operator, (" " ~ otherStr));
+      }
+    }
+
+    // Generates string message when an assertation fails
+    private string message() @trusted {
+      import std.string : format;
+      import std.conv : to;
+      import std.traits : isPointer;
+
+      static if (__traits(isScalar, T) && !isPointer!T) {
+        return format("expected [%s] %s to %s%s", T.stringof, context, (negated ? "not " : ""), operator);
+      } else static if (!isPointer!T) {
+        return format("expected [%s] %s to %s%s", T.stringof, context.to!string, (negated ? "not " : ""), operator);
+      } else {
+        return format("expected [%s] to %s%s", T.stringof, (negated ? "not " : ""), operator);
+      }
+    }
   }
 
   /**
@@ -121,7 +210,7 @@ struct Assertion(T) {
    * 255.should.equal(10); // Throws an Exception "expected 255 to equal 10"
    * ```
    */
-  T equal(U)(U other, string file = __FILE__, size_t line = __LINE__) @trusted {
+  T equal(U)(auto ref U other, string file = __FILE__, size_t line = __LINE__) @trusted {
     this.ok(context == other, other, file, line);
     return context;
   }
@@ -218,6 +307,7 @@ struct Assertion(T) {
    * ```
    */
   T exist(string file = __FILE__, size_t line = __LINE__) @safe {
+    operator = "be not null or empty";
     import std.traits : isPointer, isSomeString;
 
     static if (isPointer!T || isSomeString!T || __traits(compiles, () {
@@ -320,27 +410,63 @@ struct Assertion(T) {
     }
   }
 
-  static if (isInputRange!T || isAssociativeArray!T) {
-    /**
-     * Asserts for an input range wrapped around an Assertion to contain/include a value.
-     *
-     * Examples:
-     * ```
-     * [1, 2, 3, 4].should.include(3);
-     * "something".should.not.include('o');
-     * "something".should.include("th");
-     * ```
-     */
-    U include(U)(U other, string file = __FILE__, size_t line = __LINE__) @trusted {
-      static if (isAssociativeArray!T) {
-        auto pool = context.values;
-      } else {
-        auto pool = context;
+  static if (isInputRange!T || isArray!T || isAssociativeArray!T) {
+
+    version (MirNoGCException) {
+      /**
+      * Asserts for an input range wrapped around an Assertion to contain/include a value.
+      *
+      * Examples:
+      * ```
+      * [1, 2, 3, 4].should.include(3);
+      * "something".should.not.include('o');
+      * "something".should.include("th");
+      * ```
+      */
+      U include(U)(U other, string file = __FILE__, size_t line = __LINE__) @trusted @nogc
+      if (!isAssociativeArray!T) {
+        operator = "contain value";
+        bool found = false;
+        foreach(value ; context) {
+          if (value == other) {
+            found = true;
+            break;
+          }
+        }
+        this.ok(found, other, file, line);
+        return other;
       }
 
-      operator = "contain value";
-      this.ok(canFind(pool, other), other, file, line);
-      return other;
+      /// ditto
+      U include(U)(U other, string file = __FILE__, size_t line = __LINE__) @trusted
+      if (isAssociativeArray!T) {
+        auto pool = context.values;
+        operator = "contain value";
+        this.ok(canFind(pool, other), other, file, line);
+        return other;
+      }
+    } else {
+
+      /**
+      * Asserts for an input range wrapped around an Assertion to contain/include a value.
+      *
+      * Examples:
+      * ```
+      * [1, 2, 3, 4].should.include(3);
+      * "something".should.not.include('o');
+      * "something".should.include("th");
+      * ```
+      */
+      U include(U)(U other, string file = __FILE__, size_t line = __LINE__) @trusted {
+        static if (isAssociativeArray!T) {
+          auto pool = context.values;
+        } else {
+          auto pool = context;
+        }
+        operator = "contain value";
+        this.ok(canFind(pool, other), other, file, line);
+        return other;
+      }
     }
 
     ///ditto
@@ -501,26 +627,29 @@ struct Assertion(T) {
   cast(void)[Test(2, 3)].should;
 }
 
-@("Should Assertion.message")
-@safe unittest {
-  //  it("returns the correct message for binary operators",
-  {
-    auto a = Assertion!int(10);
-    a.operator = "equal";
-    assert(a.message(20) == "expected 10 to equal 20");
-  }
+version (MirNoGCException) {
+} else {
+  @("Should Assertion.message")
+  @safe unittest {
+    //  it("returns the correct message for binary operators",
+    {
+      auto a = Assertion!int(10);
+      a.operator = "equal";
+      assert(a.message(20) == "expected [int] 10 to equal 20");
+    }
 
-  //  it("returns the correct message for unary operators",
-  {
-    auto a = Assertion!string("function");
-    a.operator = "throw";
-    assert(a.message == "expected function to throw");
-  }
+    //  it("returns the correct message for unary operators",
+    {
+      auto a = Assertion!string("function");
+      a.operator = "throw";
+      assert(a.message == "expected [string] function to throw");
+    }
 
-  //  it("returns the correct message for negated operators",
-  {
-    auto a = Assertion!int(10);
-    a.operator = "be";
-    assert(a.not.message(false) == "expected 10 to not be false");
+    //  it("returns the correct message for negated operators",
+    {
+      auto a = Assertion!int(10);
+      a.operator = "be";
+      assert(a.not.message(false) == "expected [int] 10 to not be false");
+    }
   }
 }
