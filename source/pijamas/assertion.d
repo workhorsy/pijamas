@@ -19,8 +19,7 @@ import pijamas.exception;
  * Because of D’s lookup shortcut syntax, one is able to use both `should(obj)` and `obj.should` to
  * get an object wrapped around an Assertion instance
  */
-public Assertion!T should(T)(auto ref T context)
-{
+public Assertion!T should(T)(auto ref T context) {
   return Assertion!T(context);
 }
 
@@ -32,21 +31,18 @@ public Assertion!T should(T)(auto ref T context)
 public alias expect = should;
 
 /// Class returned by should, that it's used to generate the fluent API
-struct Assertion(T)
-{
+struct Assertion(T) {
   private static bool callable = isCallable!T;
   private bool negated = false;
   private string operator = "be";
   private T context;
 
   /// Creates a instance of Assertion, wrapping a value or object
-  this(T _context) @safe pure nothrow
-  {
+  this(T _context) @safe pure nothrow {
     context = _context;
   }
   ///ditto
-  this(ref T _context) @safe pure nothrow
-  {
+  this(ref T _context) @safe pure nothrow {
     context = _context;
   }
 
@@ -67,8 +63,7 @@ struct Assertion(T)
   ///ditto
   alias which = id;
   ///ditto
-  Assertion id() @nogc @safe pure nothrow
-  {
+  Assertion id() @nogc @safe pure nothrow {
     return this;
   }
 
@@ -81,15 +76,13 @@ struct Assertion(T)
    * 10.should.not.equal(10); // Throws an Exception "expected 10 not to be 10"
    * ```
    */
-  Assertion not() @nogc @safe pure nothrow
-  {
+  Assertion not() @nogc @safe pure nothrow {
     negated = !negated;
     return this;
   }
 
   // Helper that evaluates the asserted expression
-  private U ok(U, V)(lazy U expr, V value, string file = __FILE__, size_t line = __LINE__) @safe
-  {
+  private U ok(U, V)(lazy U expr, V value, string file = __FILE__, size_t line = __LINE__) @safe {
     if (negated ? !expr : expr) {
       return expr;
     }
@@ -97,8 +90,7 @@ struct Assertion(T)
   }
 
   // Helper that evaluates the asserted expression
-  private U ok(U)(lazy U expr, string file = __FILE__, size_t line = __LINE__) @safe
-  {
+  private U ok(U)(lazy U expr, string file = __FILE__, size_t line = __LINE__) @safe {
     if (negated ? !expr : expr) {
       return expr;
     }
@@ -106,17 +98,17 @@ struct Assertion(T)
   }
 
   // Generates string message when an assertation fails
-  private string message(U)(U other) @trusted
-  {
+  private string message(U)(U other) @trusted {
     import std.string : format;
+
     return format("expected %s to %s%s%s", context.to!string, (negated ?
         "not " : ""), operator, (" " ~ other.to!string));
   }
 
   // Generates string message when an assertation fails
-  private string message() @trusted
-  {
+  private string message() @trusted {
     import std.string : format;
+
     return format("expected %s to %s%s", context.to!string, (negated ? "not " : ""), operator);
   }
 
@@ -129,15 +121,13 @@ struct Assertion(T)
    * 255.should.equal(10); // Throws an Exception "expected 255 to equal 10"
    * ```
    */
-  T equal(U)(U other, string file = __FILE__, size_t line = __LINE__) @trusted
-  {
+  T equal(U)(U other, string file = __FILE__, size_t line = __LINE__) @trusted {
     this.ok(context == other, other, file, line);
     return context;
   }
 
   // Ripped from std.math
-  private template CommonDefaultFor(T,U)
-  {
+  private template CommonDefaultFor(T, U) {
     import std.traits : CommonType;
     import std.algorithm.comparison : min;
 
@@ -148,20 +138,15 @@ struct Assertion(T)
   }
 
   // Ripped from std.math
-  private template FloatingPointBaseType(T)
-  {
+  private template FloatingPointBaseType(T) {
     import std.traits : isFloatingPoint;
     import std.range.primitives : ElementType;
-    static if (isFloatingPoint!T)
-    {
+
+    static if (isFloatingPoint!T) {
       alias FloatingPointBaseType = Unqual!T;
-    }
-    else static if (isFloatingPoint!(ElementType!(Unqual!T)))
-    {
+    } else static if (isFloatingPoint!(ElementType!(Unqual!T))) {
       alias FloatingPointBaseType = Unqual!(ElementType!(Unqual!T));
-    }
-    else
-    {
+    } else {
       alias FloatingPointBaseType = real;
     }
   }
@@ -189,16 +174,17 @@ struct Assertion(T)
    * d.should.be.approxEqual(d2);
    * ```
    */
-  T approxEqual(U = double)(U other, U maxRelDiff = CommonDefaultFor!(T,U), U maxAbsDiff = 0.0,
+  T approxEqual(U = double)(U other, U maxRelDiff = CommonDefaultFor!(T, U), U maxAbsDiff = 0.0,
       string file = __FILE__, size_t line = __LINE__) @trusted
-      if (is(T : real) && __traits(isFloating, T) && is(U : real) && __traits(isFloating, U))
-  {
+  if (is(T : real) && __traits(isFloating, T) && is(U : real) && __traits(isFloating, U)) {
     operator = "be approximated equal than";
     static if (__traits(compiles, { import std.math : isClose; })) {
       import std.math : isClose;
+
       this.ok(isClose(context, other, maxRelDiff, maxAbsDiff), other, file, line);
     } else {
       import std.math : approxEqual;
+
       this.ok(approxEqual(context, other, maxRelDiff, maxAbsDiff), other, file, line);
     }
     return context;
@@ -231,15 +217,13 @@ struct Assertion(T)
    * aClass.should.not.exists;
    * ```
    */
-  T exist(string file = __FILE__, size_t line = __LINE__) @safe
-  {
+  T exist(string file = __FILE__, size_t line = __LINE__) @safe {
     import std.traits : isPointer, isSomeString;
 
     static if (isPointer!T || isSomeString!T || __traits(compiles, () {
         T t;
         assert(t is null);
-      }))
-    {
+      })) {
       if (context is null) {
         this.ok(false, file, line);
       }
@@ -256,8 +240,7 @@ struct Assertion(T)
    * 10.should.be.biggerThan(1);
    * ```
    */
-  bool biggerThan(U)(U other, string file = __FILE__, size_t line = __LINE__) @trusted
-  {
+  bool biggerThan(U)(U other, string file = __FILE__, size_t line = __LINE__) @trusted {
     operator = "be bigger than";
     return this.ok(context > other, other, file, line);
   }
@@ -272,8 +255,7 @@ struct Assertion(T)
    * 20.should.be.biggerOrEqualThan(10);
    * ```
    */
-  bool biggerOrEqualThan(U)(U other, string file = __FILE__, size_t line = __LINE__) @trusted
-  {
+  bool biggerOrEqualThan(U)(U other, string file = __FILE__, size_t line = __LINE__) @trusted {
     operator = "be bigger or equal than";
     return this.ok(context >= other, other, file, line);
   }
@@ -287,8 +269,7 @@ struct Assertion(T)
    * false.should.be.smallerThan(true);
    * ```
    */
-  bool smallerThan(U)(U other, string file = __FILE__, size_t line = __LINE__) @trusted
-  {
+  bool smallerThan(U)(U other, string file = __FILE__, size_t line = __LINE__) @trusted {
     operator = "be smaller than";
     return this.ok(context < other, other, file, line);
   }
@@ -303,14 +284,12 @@ struct Assertion(T)
    * false.should.be.smallerOrEqualThan(true);
    * ```
    */
-  bool smallerOrEqualThan(U)(U other, string file = __FILE__, size_t line = __LINE__) @trusted
-  {
+  bool smallerOrEqualThan(U)(U other, string file = __FILE__, size_t line = __LINE__) @trusted {
     operator = "be smaller or equal than";
     return this.ok(context <= other, other, file, line);
   }
 
-  static if (isForwardRange!T && __traits(compiles, context.isSorted))
-  {
+  static if (isForwardRange!T && __traits(compiles, context.isSorted)) {
     /**
      * Asserts whether a forward range is sorted.
      *
@@ -320,15 +299,13 @@ struct Assertion(T)
      * [1, 2, 0, 4].should.not.be.sorted;
      * ```
      */
-    bool sorted(string file = __FILE__, size_t line = __LINE__) @trusted
-    {
+    bool sorted(string file = __FILE__, size_t line = __LINE__) @trusted {
       operator = "be sorted";
       return this.ok(context.isSorted, file, line);
     }
   }
 
-  static if (isAssociativeArray!T)
-  {
+  static if (isAssociativeArray!T) {
     /**
      * Asserts for an associative array to have a key equal to other.
      *
@@ -337,15 +314,13 @@ struct Assertion(T)
      * ["something": 10].should.have.key("something");
      * ```
      */
-    void key(U)(U other, string file = __FILE__, size_t line = __LINE__) @trusted
-    {
+    void key(U)(U other, string file = __FILE__, size_t line = __LINE__) @trusted {
       operator = "have key";
       this.ok(!(other !in context), other, file, line);
     }
   }
 
-  static if (isInputRange!T || isAssociativeArray!T)
-  {
+  static if (isInputRange!T || isAssociativeArray!T) {
     /**
      * Asserts for an input range wrapped around an Assertion to contain/include a value.
      *
@@ -356,8 +331,7 @@ struct Assertion(T)
      * "something".should.include("th");
      * ```
      */
-    U include(U)(U other, string file = __FILE__, size_t line = __LINE__) @trusted
-    {
+    U include(U)(U other, string file = __FILE__, size_t line = __LINE__) @trusted {
       static if (isAssociativeArray!T) {
         auto pool = context.values;
       } else {
@@ -375,8 +349,7 @@ struct Assertion(T)
     alias contain = include;
   }
 
-  static if (hasLength!T || hasMember!(T, "string") || isSomeString!T)
-  {
+  static if (hasLength!T || hasMember!(T, "string") || isSomeString!T) {
     /**
      * Asserts for the .length property or function value to equal some value.
      *
@@ -387,8 +360,7 @@ struct Assertion(T)
      * // ^^ - Throws an Exception "expected 'abcdefg' to have length of 0"
      * ```
      */
-    U length(U)(U len, string file = __FILE__, size_t line = __LINE__) @trusted
-    {
+    U length(U)(U len, string file = __FILE__, size_t line = __LINE__) @trusted {
       operator = "have length of";
       this.ok(context.length == len, len, file, line);
       return len;
@@ -403,8 +375,7 @@ struct Assertion(T)
      * "".should.be.empty;
      * ```
      */
-    bool empty(string file = __FILE__, size_t line = __LINE__) @trusted
-    {
+    bool empty(string file = __FILE__, size_t line = __LINE__) @trusted {
       operator = "is empty";
       return this.ok(context.length == 0, file, line);
     }
@@ -413,8 +384,7 @@ struct Assertion(T)
   import std.regex : Regex, isRegexFor;
   import std.traits : isSomeString;
 
-  static if (isSomeString!T)
-  {
+  static if (isSomeString!T) {
 
     /**
      * Asserts for a string wrapped around the Assertion to match a regular expression.
@@ -429,8 +399,7 @@ struct Assertion(T)
      * ```
      */
     auto match(RegEx)(RegEx re, string file = __FILE__, size_t line = __LINE__) @safe
-        if (isSomeString!T && isRegexFor!(RegEx, T))
-    {
+    if (isSomeString!T && isRegexFor!(RegEx, T)) {
       import std.regex : match;
 
       auto m = match(context, re);
@@ -441,8 +410,7 @@ struct Assertion(T)
 
     ///ditto
     auto match(U)(U re, string file = __FILE__, size_t line = __LINE__) @safe
-        if (isSomeString!T && isSomeString!U)
-    {
+    if (isSomeString!T && isSomeString!U) {
       import std.regex : regex, match;
 
       auto m = match(context, regex(re));
@@ -452,8 +420,7 @@ struct Assertion(T)
     }
   }
 
-  static if (is(T == bool))
-  {
+  static if (is(T == bool)) {
     /**
      * Asserts for a boolean value to be equal to true.
      *
@@ -463,8 +430,7 @@ struct Assertion(T)
      * (1 == 1).should.be.True;
      * ```
      */
-    bool True(string file = __FILE__, size_t line = __LINE__) @safe
-    {
+    bool True(string file = __FILE__, size_t line = __LINE__) @safe {
       return this.ok(context == true, true, file, line);
     }
 
@@ -477,14 +443,12 @@ struct Assertion(T)
      * (1 != 1).should.be.False;
      * ```
      */
-    bool False(string file = __FILE__, size_t line = __LINE__) @safe
-    {
+    bool False(string file = __FILE__, size_t line = __LINE__) @safe {
       return !this.ok(context == false, false, file, line);
     }
   }
 
-  static if (isCallable!T)
-  {
+  static if (isCallable!T) {
     /**
      * Asserts whether a callable object wrapped around the assertion throws an exception of type T.
      *
@@ -505,8 +469,7 @@ struct Assertion(T)
      * should(&notThrowing).not.Throw;
      * ```
      */
-    void Throw(T : Throwable = Exception)(string file = __FILE__, size_t line = __LINE__) @trusted
-    {
+    void Throw(T : Throwable = Exception)(string file = __FILE__, size_t line = __LINE__) @trusted {
       operator = "throw";
       bool thrown = false;
       try {
@@ -521,19 +484,16 @@ struct Assertion(T)
 }
 
 @("Should(v)")
-@safe unittest
-{
+@safe unittest {
   //  it("returns an Assertion", {
   assert(is(typeof(10.should) == Assertion!int));
   assert(is(typeof(10f.expect) == Assertion!float));
 }
 
 @("Should Assertion")
-@safe unittest
-{
+@safe unittest {
   //  it("can be instantiated for ranges of structs without `opCmp`", {
-  struct Test
-  {
+  struct Test {
     int a;
     int b;
   }
@@ -542,8 +502,7 @@ struct Assertion(T)
 }
 
 @("Should Assertion.message")
-@safe unittest
-{
+@safe unittest {
   //  it("returns the correct message for binary operators",
   {
     auto a = Assertion!int(10);
