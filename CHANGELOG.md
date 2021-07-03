@@ -1,3 +1,4 @@
+# v1.1.0
 
 * Experimental @nogc support thanks to mir-algorithm and dip1008
 * Fix some hidden bug with should.exist() with pointers

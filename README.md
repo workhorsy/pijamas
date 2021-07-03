@@ -173,6 +173,9 @@ value.
 [1, 2, 3, 4].should.include(3);
 "something".should.not.include('o');
 "something".should.include("th");
+
+Note that not works with associative arrays on @nogc code.
+Note that not works finding a substring of a string on @nogc code.
 ```
 
 #### `U length(U)(U length, string file = __FILE__, size_t line = __LINE__);`
@@ -204,6 +207,7 @@ Asserts for a string wrapped around the Assertion to match a regular expression.
 "1234numbers".should.match(`[0-9]+[a-z]+`);
 "1234numbers".should.not.match(`^[a-z]+`);
 ```
+Note that not works on @nogc code.
 
 #### `bool True(string file = __FILE__, size_t = line = __LINE__);` and `.False`
 
@@ -223,6 +227,7 @@ Asserts whether a forward range is sorted.
 [1, 2, 3, 4].should.be.sorted;
 [1, 2, 0, 4].should.not.be.sorted;
 ```
+Note that not works on @nogc code.
 
 #### `void key(U)(U other, string file = __FILE__, size_t line = __LINE__);`
 

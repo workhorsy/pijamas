@@ -2,6 +2,12 @@
 layout: default
 title: Changelog
 ---
+# v1.1.0
+
+* Experimental @nogc support thanks to mir-algorithm and dip1008
+* Fix some hidden bug with should.exist() with pointers
+* Improved output message. Now shows that type of the expected and tests values.
+
 # v1.0.1
 
 * Pijamas now supports DLang frontend 2.086
@@ -11,8 +17,8 @@ title: Changelog
 * Moved unit-tests to an separate foolder to avoid pollute other projects with
     Pijamas unit-testing dependencies.
 * Launch tests using silly, unit-threaded, trial and dunit.
-* Assertions now throws AssertException that it's an alias to AssertError or to
-    unit-threaded UnitTestException;
+* Assertions now throws AssertException that extends from Exception or to
+    unit-threaded UnitTestException
 * Added expect and .to()
 * Now Assertion is a struct
 
