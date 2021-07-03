@@ -61,6 +61,18 @@ dub.json:
 
 And import pijamas where you nee it.
 
+## NoGC mode
+
+Pijamas haves a experimental support of nogc exceptions (thanks to mir-algorithm). This allow to use Pijamas on @nogc unittest blocks. Howeverm not the whole API it's allowed to be used on this way. For example, should.match(), depends on std.regex and isn't @nogc compatible.
+
+To use this @nogc mode, simply use dub's subConfigurations to call the "nogc" configuration, and togle `dip1008`. However, remeber that your unit-tests would have the mir-algorithm as indirect dependency.
+
+dub.json:
+```json
+"subConfigurations": {
+    "pijamas": "nogc"
+}
+```
 
 ### General Assertions
 
@@ -161,6 +173,9 @@ value.
 [1, 2, 3, 4].should.include(3);
 "something".should.not.include('o');
 "something".should.include("th");
+
+Note that not works with associative arrays on @nogc code.
+Note that not works finding a substring of a string on @nogc code.
 ```
 
 #### `U length(U)(U length, string file = __FILE__, size_t line = __LINE__);`
@@ -192,6 +207,7 @@ Asserts for a string wrapped around the Assertion to match a regular expression.
 "1234numbers".should.match(`[0-9]+[a-z]+`);
 "1234numbers".should.not.match(`^[a-z]+`);
 ```
+Note that not works on @nogc code.
 
 #### `bool True(string file = __FILE__, size_t = line = __LINE__);` and `.False`
 
@@ -211,6 +227,7 @@ Asserts whether a forward range is sorted.
 [1, 2, 3, 4].should.be.sorted;
 [1, 2, 0, 4].should.not.be.sorted;
 ```
+Note that not works on @nogc code.
 
 #### `void key(U)(U other, string file = __FILE__, size_t line = __LINE__);`
 

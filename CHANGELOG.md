@@ -1,3 +1,9 @@
+# v1.1.0
+
+* Experimental @nogc support thanks to mir-algorithm and dip1008
+* Fix some hidden bug with should.exist() with pointers
+* Improved output message. Now shows that type of the expected and tests values.
+
 # v1.0.1
 
 * Pijamas now supports DLang frontend 2.086

@@ -14,6 +14,15 @@
       "targetType": "library"
     },
     {
+      "name": "nogc",
+      "targetType": "library",
+      "versions": ["MirNoGCException"],
+      "dependencies": {
+        "mir-algorithm": {"version": "~>3.10", "optional": true, "default": true}
+      },
+      "dflags": ["-preview=dip1008"]
+    },
+    {
       "name": "trial",
       "targetType": "library",
       "importPaths": ["source", "tests/source"],

@@ -3,7 +3,7 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>pijamas</title>
+    <title>pijamas.assertion</title>
     <style type="text/css" media="screen">
       html, body, div, span, object, iframe, h1, h2, h3, h4, h5, h6, p,
       blockquote, pre, a, abbr, address, cite, code, del, dfn, em, figure,
@@ -508,18 +508,11 @@
   <body id="ddoc_main" class="ddoc dlang">
     <div class="content_wrapper">
       <article class="module">
-        <h1 class="module_name">pijamas</h1>
+        <h1 class="module_name">pijamas.assertion</h1>
         <section id="module_content"><section class="section ddoc_sections">
   <div class="ddoc_summary">
   <p class="para">
-    Pijamas, a BDD assertion library for D.
-
-  </p>
-</div>
-<div class="ddoc_authors">
-  <h4>Authors</h4>
-  <p class="para">
-    Pedro Tacla Yamada, Luis Panadero Guardeño
+    Pijamas, a BDD <code class="code">assertion</code> library for D.
 
   </p>
 </div>
@@ -558,8 +551,43 @@
   <section class="section ddoc_sections">
   <div class="ddoc_summary">
   <p class="para">
-    Pijamas exports a single function <code class="code">should</code> meant for public use. Because of D’s lookup shortcut syntax, one is able
- to use both <code class="code">should</code>(obj) and obj.<code class="code">should</code> to get an object wrapped around an Assertion instance
+    The function <strong><code class="code">should</code></strong> it's an helper or syntax sugar to create the assertation.
+ Because of D’s lookup shortcut syntax, one is able to use both <code class="code"><code class="code">should</code>(obj)</code> and <code class="code">obj.<code class="code">should</code></code> to
+ get an object wrapped around an Assertion instance
+  </p>
+</div>
+
+</section>
+
+</div>
+
+</li><li class="ddoc_member">
+  <div class="ddoc_member_header">
+  <div class="ddoc_header_anchor">
+  <a href="#expect" id="expect"><code class="code">expect</code></a>
+</div>
+</div><div class="ddoc_decl">
+  <section class="section">
+    <div class="declaration">
+      <h4>Declaration</h4>
+      <div class="dlang">
+        <p class="para">
+          <code class="code">
+            <span class="ddoc_anchor" id="expect"></span>alias <code class="code">expect</code> = should(T)(auto ref T context);
+
+          </code>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="ddoc_decl">
+  <section class="section ddoc_sections">
+  <div class="ddoc_summary">
+  <p class="para">
+    The function <strong><code class="code">expect</code></strong> it's an helper or syntax sugar to create the assertation.
+ Because of D’s lookup shortcut syntax, one is able to use both <code class="code"><code class="code">expect</code>(obj)</code> and <code class="code">obj.<code class="code">expect</code></code> to
+ get an object wrapped around an Assertion instance
   </p>
 </div>
 
@@ -579,7 +607,7 @@
       <div class="dlang">
         <p class="para">
           <code class="code">
-            <span class="ddoc_anchor" id="Assertion"></span>class <code class="code">Assertion</code>(T);
+            <span class="ddoc_anchor" id="Assertion"></span>struct <code class="code">Assertion</code>(T);
 
           </code>
         </p>
@@ -644,6 +672,8 @@ pure nothrow @safe this(ref T <code class="code">_context</code>);
         <p class="para">
           <code class="code">
             <span class="ddoc_anchor" id="Assertion.be"></span>alias <code class="code">be</code> = id;
+<br>
+<span class="ddoc_anchor" id="Assertion.to"></span>alias <code class="code">to</code> = id;
 <br>
 <span class="ddoc_anchor" id="Assertion.as"></span>alias <code class="code">as</code> = id;
 <br>
@@ -739,7 +769,7 @@ pure nothrow @safe this(ref T <code class="code">_context</code>);
       <div class="dlang">
         <p class="para">
           <code class="code">
-            <span class="ddoc_anchor" id="Assertion.equal"></span>@trusted T <code class="code">equal</code>(U)(U <code class="code">other</code>, string <code class="code">file</code> = __FILE__, size_t <code class="code">line</code> = __LINE__);
+            <span class="ddoc_anchor" id="Assertion.equal"></span>@trusted T <code class="code">equal</code>(U)(auto ref U <code class="code">other</code>, string <code class="code">file</code> = __FILE__, size_t <code class="code">line</code> = __LINE__);
 
           </code>
         </p>
@@ -1332,7 +1362,9 @@ aClass.should.not.exists;
       <div class="dlang">
         <p class="para">
           <code class="code">
-            <span class="ddoc_anchor" id="Assertion.include"></span>@trusted U <code class="code">include</code>(U)(U <code class="code">other</code>, string <code class="code">file</code> = __FILE__, size_t <code class="code">line</code> = __LINE__);
+            <span class="ddoc_anchor" id="Assertion.include"></span>@nogc @trusted U <code class="code">include</code>(U)(U <code class="code">other</code>, string <code class="code">file</code> = __FILE__, size_t <code class="code">line</code> = __LINE__) if (!isAssociativeArray!T);
+<br>
+@trusted U <code class="code">include</code>(U)(U <code class="code">other</code>, string <code class="code">file</code> = __FILE__, size_t <code class="code">line</code> = __LINE__) if (isAssociativeArray!T);
 <br>
 <span class="ddoc_anchor" id="Assertion.value"></span>alias <code class="code">value</code> = include;
 <br>
