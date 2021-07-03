@@ -57,6 +57,10 @@ jobs:
         if: runner.os == 'Linux' && matrix.dc != 'dmd-2.086.1'
         run:
           dub run trial:runner@~master
+      - name: 'Test @nogc mode with silly'
+        if: matrix.dc != 'dmd-2.086.1'
+        run:
+          dub test --root=tests/silly --parallel --coverage -c nogc
 
       - name: Upload Coverage to Codecov
         # Upload test coverage
