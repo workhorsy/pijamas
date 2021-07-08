@@ -105,12 +105,17 @@ struct Assertion(T) {
       import mir.conv : to;
       import mir.small_string;
 
-
       alias S = SmallString!512;
       auto buf = stringBuf();
       buf << "expected [" << T.stringof  << "]";
       static if (__traits(isScalar, T) && !isPointer!T) {
         buf << " " << to!S(this.context);
+      } else {
+        if (this.context is null) {
+          buf << " null";
+        } else {
+          buf << to!S(this.context);
+        }
       }
       buf << " to ";
       if (negated) {
@@ -119,12 +124,18 @@ struct Assertion(T) {
       buf << operator << " [" << U.stringof  << "]";
       static if (__traits(isScalar, U) && !isPointer!U) {
         buf << " " << to!S(other);
+      } else {
+        if (other is null) {
+          buf << " null";
+        } else {
+          buf << to!S(other);
+        }
       }
       return buf;
     }
 
     // Generates string message when an assertation fails
-    private stringBuf message() @trusted @nogc {
+    private stringBuf message() @trusted {
       import std.traits;
       import mir.conv : to;
       import mir.small_string;
@@ -134,6 +145,12 @@ struct Assertion(T) {
       buf << "expected [" << T.stringof  << "]";
       static if (__traits(isScalar, T) && !isPointer!T) {
         buf << " " << to!S(this.context);
+      } else {
+        if (this.context is null) {
+          buf << " null";
+        //} else {
+        //  buf << to!S(this.context);
+        }
       }
       buf << " to ";
       if (negated) {
@@ -167,22 +184,19 @@ struct Assertion(T) {
       import std.conv : to;
       import std.traits : isPointer;
 
+      static if (!isPointer!T) {
+        string contextStr = to!string(this.context);
+      } else {
+        string contextStr = (this.context is null) ? "null" : this.context.to!string;
+      }
       static if (!isPointer!U) {
         string otherStr = to!string(other);
       } else {
-        string otherStr = U.stringof;
+        string otherStr = (other is null) ? "null" : other.to!string;
       }
 
-      static if (__traits(isScalar, T) && !isPointer!T) {
-        return format("expected [%s] %s to %s%s%s", T.stringof, context, (negated ?
-            "not " : ""), operator, (" " ~ otherStr));
-      } else static if (!isPointer!T) {
-        return format("expected [%s] %s to %s%s%s", T.stringof, context.to!string, (negated ?
-            "not " : ""), operator, (" " ~ otherStr));
-      } else {
-        return format("expected [%s] to %s%s%s", T.stringof, (negated ?
-            "not " : ""), operator, (" " ~ otherStr));
-      }
+      return format("expected [%s] %s to %s%s [%s] %s", T.stringof, context, (negated ? "not " : ""), operator,
+          U.stringof,  otherStr);
     }
 
     // Generates string message when an assertation fails
@@ -191,13 +205,13 @@ struct Assertion(T) {
       import std.conv : to;
       import std.traits : isPointer;
 
-      static if (__traits(isScalar, T) && !isPointer!T) {
-        return format("expected [%s] %s to %s%s", T.stringof, context, (negated ? "not " : ""), operator);
-      } else static if (!isPointer!T) {
-        return format("expected [%s] %s to %s%s", T.stringof, context.to!string, (negated ? "not " : ""), operator);
+      static if (!isPointer!T) {
+        string contextStr = to!string(this.context);
       } else {
-        return format("expected [%s] to %s%s", T.stringof, (negated ? "not " : ""), operator);
+        string contextStr = (this.context is null) ? "null" : this.context.to!string;
       }
+
+      return format("expected [%s] %s to %s%s", T.stringof, contextStr, (negated ? "not " : ""), operator);
     }
   }
 
@@ -628,14 +642,66 @@ struct Assertion(T) {
 }
 
 version (MirNoGCException) {
-} else {
   @("Should Assertion.message")
-  @safe unittest {
+  unittest {
     //  it("returns the correct message for binary operators",
     {
       auto a = Assertion!int(10);
       a.operator = "equal";
-      assert(a.message(20) == "expected [int] 10 to equal 20");
+      assert(a.message(20).data == "expected [int] 10 to equal [int] 20");
+
+      auto a2 = Assertion!size_t(23);
+      a2.operator = "be greater that";
+      assert(a2.be.message(20).data == "expected [ulong] 23 to be greater that [int] 20");
+    }
+
+    //  it("returns the correct message for unary operators",
+    {
+      auto a = Assertion!string("function");
+      a.operator = "throw";
+      // TODO Fix this case
+      assert(a.message.data == "expected [string] to throw");
+
+      auto a2 = Assertion!int(23);
+      a2.operator = "exist";
+      assert(a2.message.data == "expected [int] 23 to exist");
+
+      struct S {
+        int x;
+
+        /*
+        void toString(C = char, W)(scope ref W w) scope const
+        {
+          w.put("#C#");
+        }
+        */
+      }
+
+      auto a3 = Assertion!(S*)(null);
+      a3.operator = "exist";
+      assert(a3.message.data == "expected [S*] null to exist");
+    }
+
+    //  it("returns the correct message for negated operators",
+    {
+      auto a = Assertion!int(10);
+      a.operator = "be";
+      assert(a.not.message(false).data == "expected [int] 10 to not be [bool] false");
+    }
+  }
+} else {
+  @("Should Assertion.message")
+  unittest {
+    //  it("returns the correct message for binary operators",
+    {
+      auto a = Assertion!int(10);
+      a.operator = "equal";
+      assert(a.message(20) == "expected [int] 10 to equal [int] 20");
+
+      auto a2 = Assertion!size_t(23);
+      a2.operator = "be greater that";
+      assert(a2.be.message(20) == "expected [ulong] 23 to be greater that [int] 20");
+
     }
 
     //  it("returns the correct message for unary operators",
@@ -643,13 +709,30 @@ version (MirNoGCException) {
       auto a = Assertion!string("function");
       a.operator = "throw";
       assert(a.message == "expected [string] function to throw");
+
+      auto a2 = Assertion!int(23);
+      a2.operator = "exist";
+      assert(a2.message == "expected [int] 23 to exist");
+
+      class C {
+        int x;
+      }
+
+      C cl = null;
+      auto a3 = Assertion!C(cl);
+      a3.operator = "exist";
+      assert(a3.message == "expected [C] null to exist");
+
+      auto a4 = Assertion!(C*)(null);
+      a4.operator = "exist";
+      assert(a4.be.message == "expected [C*] null to exist");
     }
 
     //  it("returns the correct message for negated operators",
     {
       auto a = Assertion!int(10);
       a.operator = "be";
-      assert(a.not.message(false) == "expected [int] 10 to not be false");
+      assert(a.not.message(false) == "expected [int] 10 to not be [bool] false");
     }
   }
 }
