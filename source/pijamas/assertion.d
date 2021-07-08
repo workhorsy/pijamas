@@ -99,8 +99,9 @@ struct Assertion(T) {
     }
 
     import mir.format;
+
     // Generates string message when an assertation fails
-    private stringBuf message(U)(U other) @trusted @nogc {
+    private stringBuf message(U)(U other) @trusted {
       import std.traits;
       import mir.conv : to;
       import mir.small_string;
@@ -108,28 +109,28 @@ struct Assertion(T) {
       alias S = SmallString!512;
       auto buf = stringBuf();
       buf << "expected [" << T.stringof  << "]";
-      static if (__traits(isScalar, T) && !isPointer!T) {
+      static if ((__traits(isScalar, T) && !isPointer!T) || is(T == struct) || isArray!T ) {
         buf << " " << to!S(this.context);
       } else {
         if (this.context is null) {
           buf << " null";
-        } else {
-          buf << to!S(this.context);
-        }
+        } //else {
+        //  buf << to!S(this.context);
+        //}
       }
       buf << " to ";
       if (negated) {
         buf << "not ";
       }
       buf << operator << " [" << U.stringof  << "]";
-      static if (__traits(isScalar, U) && !isPointer!U) {
+      static if ((__traits(isScalar, U) && !isPointer!U) || is(U == struct) || isArray!U ) {
         buf << " " << to!S(other);
       } else {
         if (other is null) {
           buf << " null";
-        } else {
-          buf << to!S(other);
-        }
+        }// else {
+        //  buf << to!S(other);
+        //}
       }
       return buf;
     }
@@ -143,7 +144,7 @@ struct Assertion(T) {
       alias S = SmallString!512;
       auto buf = stringBuf();
       buf << "expected [" << T.stringof  << "]";
-      static if (__traits(isScalar, T) && !isPointer!T) {
+      static if ((__traits(isScalar, T) && !isPointer!T) || is(T == struct) || isArray!T ) {
         buf << " " << to!S(this.context);
       } else {
         if (this.context is null) {
@@ -659,8 +660,7 @@ version (MirNoGCException) {
     {
       auto a = Assertion!string("function");
       a.operator = "throw";
-      // TODO Fix this case
-      assert(a.message.data == "expected [string] to throw");
+      assert(a.message.data == "expected [string] function to throw");
 
       auto a2 = Assertion!int(23);
       a2.operator = "exist";
