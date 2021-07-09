@@ -1,3 +1,7 @@
+# v1.1.1
+
+* Some tweaks on the generated messages. 
+
 # v1.1.0
 
 * Experimental @nogc support thanks to mir-algorithm and dip1008
