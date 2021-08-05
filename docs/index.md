@@ -17,7 +17,7 @@ Forked from [Yamadacpc's Pyjamas](http://yamadapc.github.io/pyjamas/)
 
 ## Example
 ```d
-import pyjamas;
+import pijamas;
 
 10.should.equal(10);
 5.should.not.equal(10);
